@@ -18,7 +18,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/test', function (Request $request) {
-    return "wdedew";
-    return $request->user();
+
+Route::post('/test', function () {
+    return "wdedeedwdwwfwefwefwfwfww";
+    //return $request->user();
 });
+
+Route::post('/prim', 'MyPlaceController@index');
