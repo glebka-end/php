@@ -25,3 +25,4 @@ Route::post('/test', function () {
 });
 
 Route::post('/prim', 'MyPlaceController@index');
+Route::post('/primn', 'MyPlaceController@index2');
