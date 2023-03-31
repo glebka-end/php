@@ -11,7 +11,7 @@ class MyPlaceController extends Controller
         
     }
     public function index2(){
-        return "conroller";
+        return "conroller2";
         
     }
 }
