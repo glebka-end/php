@@ -23,6 +23,8 @@ Route::post('/test', function () {
     return "wdedeedwdwwfwefwefwfwfww";
     //return $request->user();
 });
+Route::apiresource('/poste',PostControllerApi::class);
 
 Route::post('/prim', 'MyPlaceController@index');
 Route::post('/primn', 'MyPlaceController@index2');
+
