@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostControllerApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,6 @@ Route::apiresource('/poste',PostControllerApi::class);
 
 Route::post('/prim', 'MyPlaceController@index');
 Route::post('/primn', 'MyPlaceController@index2');
+
+Route::get('/baisc', 'baisc@index');
 
