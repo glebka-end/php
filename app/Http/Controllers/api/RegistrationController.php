@@ -10,7 +10,8 @@ class RegistrationController extends Controller
 {
     /**
      * Display a listing of the resource.
-     */
+     */    
+
     public function index()
     {
         return user::all();
@@ -21,6 +22,12 @@ class RegistrationController extends Controller
      */
     public function store(Request $request)
     {
+        
+        $ww=user::find($request);
+        return  ($ww); 
+       if ($ww==[]){
+            return  ($ww); 
+        }
         $crated_desk =user::create($request->all());
         return new RegistrationResourse($crated_desk);
     }
