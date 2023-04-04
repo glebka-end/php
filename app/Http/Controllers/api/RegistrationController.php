@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\RegistrationResourse;
+use GuzzleHttp\Promise\Create;
 
 class RegistrationController extends Controller
 {
@@ -24,10 +25,15 @@ class RegistrationController extends Controller
     {
         
         $ww=user::find($request);
-        return  ($ww); 
-       if ($ww==[]){
-            return  ($ww); 
-        }
+    //     $token = $request->user()->createToken($request->token_name);
+    //     return ['token' => $token->plainTextToken];
+    //     return  ($request); 
+    //    if ($ww==[]){
+    //         return  ($ww); 
+    //     }
+
+    $user = $request->user();
+    return $user;
         $crated_desk =user::create($request->all());
         return new RegistrationResourse($crated_desk);
     }
