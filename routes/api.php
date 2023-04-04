@@ -1,4 +1,7 @@
 <?php
+use App\Models\User;//
+use Illuminate\Support\Facades\Hash;//
+use Illuminate\Support\Str;//
 
 use App\Http\Controllers\api\RegistrationController;//
 use App\Http\Controllers\PostControllerApi;
@@ -7,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersControllerApi;//
 use Doctrine\DBAL\Schema\Index;
 use phpseclib3\File\ASN1\Maps\Name;
+use App\Http\Controllers\api\logController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +32,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return "wdedeedwdwwfwefwefwfwfww";
 //     //return $request->user();
 // });
-// Route::apiresource('/poste',PostControllerApi::class);
+Route::apiresource('/poste',PostControllerApi::class);
 
-// Route::post('/prim', 'MyPlaceController@index');
+Route::post('/prim', 'MyPlaceController@index');
 // Route::post('/primn', 'MyPlaceController@index2');
 
 // Route::get('/baisc', 'baisc@index');
@@ -41,3 +45,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiresource('/user_Registration',UsersControllerApi::class);
 Route::apiresource('/Registration',RegistrationController::class) ;
+// Route::get('user/{id}' ,function(request $request,$id){
+//     $user =\App\Models\User::find($id);
+//     if(!$user) return response ('wew' ,404);
+//     return $user;
+// });
+//Route::post('/log','logController@login');
+Route::post('/log',function(Request $request){
+   // return $request;
+    $user = User::wherename($request->query('name'))->first();
+        if (Hash::check($request->query('password'), $user->password))
+            return "OK";
+        else
+      return "NE OK";
+});

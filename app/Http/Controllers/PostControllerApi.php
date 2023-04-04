@@ -1,17 +1,31 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;//
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 class PostControllerApi extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function e(Request $request)
     {
-        return'api_index';
+        return $request;
+        $user = User::whereEmail($request->query('email'))->first();
+        if (Hash::check($request->query('password'), $user->password))
+            return "OK";
+        else
+            return "NE OK";
+    }
+    public function index(Request $request)
+    {
+        $user = User::whereEmail($request->query('email'))->first();
+        if (Hash::check($request->query('password'), $user->password))
+            return "OK";
+        else
+            return "NE OK";
     }
 
     /**
@@ -19,8 +33,12 @@ class PostControllerApi extends Controller
      */
     public function store(Request $request)
     {
+        $user = User::whereEmail($request->query('email'))->first();
+        if (Hash::check($request->query('password'), $user->password))
+            return "OK";
+        else
+            return "NE OK";
         
-        return'api_store';
     }
 
     /**

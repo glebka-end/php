@@ -16,6 +16,7 @@ class RegistrationController extends Controller
 
     public function index()
     {
+        return'wwew';
         return user::all();
     }
 
@@ -35,22 +36,39 @@ class RegistrationController extends Controller
 
     // $user = $request->user();g
     // return $user;
+    $user_name = User::wherename($request->query('name'))->first();
+    if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
     $user = User::whereEmail($request->query('email'))->first();
-    if ($user) return response('User exists', 409)->header('Content-Type', 'text/plain');
-   $request['password']=Hash::make($request['password']);
+     if ($user) return response('email is busy', 409)->header('Content-Type', 'text/plain');
+
+    // $user_name = User::wherepassword($request->query('name'))->first();
+    // if ($user_name) return response('passwors is busy', 409)->header('Content-Type', 'text/plain');
+  
+   $request['password']=Hash::make($request['password']);     //passwors
    $request['remember_token'] = Str::random(10);
+ 
    $user = User::create($request->toArray());
+   
    $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
    $response = ['token' => $token];
+   //$user = User::create($token->all());
+
    return response($response, 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
-        //
+        
+   $request['password']=Hash::make($request['password']);     //passwors
+   $request['remember_token'] = Str::random(10);
+ 
+   $user = User::create($request->toArray());
+   
+   $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
+   $response = ['token' => $token];
     }
 
     /**
