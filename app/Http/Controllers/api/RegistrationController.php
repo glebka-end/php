@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\RegistrationResourse;
 use GuzzleHttp\Promise\Create;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 class RegistrationController extends Controller
 {
     /**
@@ -24,18 +25,24 @@ class RegistrationController extends Controller
     public function store(Request $request)
     {
         
-        $ww=user::find($request);
-    //     $token = $request->user()->createToken($request->token_name);
-    //     return ['token' => $token->plainTextToken];
-    //     return  ($request); 
-    //    if ($ww==[]){
-    //         return  ($ww); 
-    //     }
+    //     $ww=user::find($request);
+    // //     $token = $request->user()->createToken($request->token_name);
+    // //     return ['token' => $token->plainTextToken];
+    // //     return  ($request); 
+    // //    if ($ww==[]){
+    // //         return  ($ww); 
+    // //     }
 
-    $user = $request->user();
-    return $user;
-        $crated_desk =user::create($request->all());
-        return new RegistrationResourse($crated_desk);
+    // $user = $request->user();g
+    // return $user;
+    $user = User::whereEmail($request->query('email'))->first();
+    if ($user) return response('User exists', 409)->header('Content-Type', 'text/plain');
+   $request['password']=Hash::make($request['password']);
+   $request['remember_token'] = Str::random(10);
+   $user = User::create($request->toArray());
+   $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
+   $response = ['token' => $token];
+   return response($response, 200);
     }
 
     /**
