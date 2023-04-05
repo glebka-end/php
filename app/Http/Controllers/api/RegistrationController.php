@@ -36,7 +36,7 @@ class RegistrationController extends Controller
 
     // $user = $request->user();g
     // return $user;
-    $user_name = User::wherename($request->query('name'))->first();
+    $user_name = User::where('name',$request->query('name'))->first();
     if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
     $user = User::whereEmail($request->query('email'))->first();
      if ($user) return response('email is busy', 409)->header('Content-Type', 'text/plain');
@@ -59,17 +59,17 @@ class RegistrationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
-    {
+//     public function show(Request $request)
+//     {
         
-   $request['password']=Hash::make($request['password']);     //passwors
-   $request['remember_token'] = Str::random(10);
+//    $request['password']=Hash::make($request['password']);     //passwors
+//    $request['remember_token'] = Str::random(10);
  
-   $user = User::create($request->toArray());
+//    $user = User::create($request->toArray());
    
-   $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
-   $response = ['token' => $token];
-    }
+//    $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
+//    $response = ['token' => $token];
+//     }
 
     /**
      * Update the specified resource in storage.

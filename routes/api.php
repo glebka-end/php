@@ -7,7 +7,7 @@ use App\Http\Controllers\api\RegistrationController;//
 use App\Http\Controllers\PostControllerApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\api\UsersControllerApi;//
+use App\Http\Controllers\api\UsersController;//
 use Doctrine\DBAL\Schema\Index;
 use phpseclib3\File\ASN1\Maps\Name;
 use App\Http\Controllers\api\logController;
@@ -23,9 +23,20 @@ use App\Http\Controllers\api\logController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/users/self', [UsersController::class, 'self']);
+    
 });
+//Route::apiresource('/users',UsersController::class);
+Route::post('/users/register', [UsersController::class, 'register']);
+Route::get('/users/index', [UsersController::class, 'index']);
+Route::get('/users/show/{id}', [UsersController::class, 'show']);
+Route::put('/users/update/{id}', [UsersController::class, 'update']);
+Route::delete('/users/destroy/{id}', [UsersController::class, 'destroy']);
+
+
+
+
 
 
 // Route::post('/test', function () {
@@ -45,7 +56,7 @@ Route::post('/prim', 'MyPlaceController@index');
 
 Route::apiresource('/user_Registration',UsersControllerApi::class);
 Route::apiresource('/Registration',RegistrationController::class) ;
-// Route::get('user/{id}' ,function(request $request,$id){
+// Route::get('user/{user}' ,function(request $request, User $user){
 //     $user =\App\Models\User::find($id);
 //     if(!$user) return response ('wew' ,404);
 //     return $user;
