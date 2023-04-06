@@ -9,6 +9,12 @@ use App\Http\Requests\Api\UsersIpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Api\UserloginRequest;
+
+
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 class UsersController extends Controller
 {
     /**
@@ -52,12 +58,28 @@ class UsersController extends Controller
    // return response($response, 200);
     
     }
+  //  UsersRegisterRequest 
+    public function self(UserloginRequest  $request)
+    { 
+        $credentials = $request->only('email', 'password');
 
-    public function self(Request $request)
-    {
-        $user = $request->user();
-        return UserResource::make($user);
+	if (!Auth::attempt($credentials)) {
+		return response()->json([
+			'message' => 'Неверно указан логин или пароль',
+			'errors' => 'Unauthorised'
+		], 401);
         
+	}
+        
+        return 'красава ';
+//         $user_name = User::where('name',$request->query('name'))->first();
+//             if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
+// return $user_name
+        //    $user = User::whereEmail($request->query('email'))->first();
+        //      if ($user) return response('email is busy', 409)->header('Content-Type', 'text/plain');
+       // $user = $request->user();
+       // return UserResource::make($user);
+      
     }
 
     public function index()
@@ -70,7 +92,10 @@ class UsersController extends Controller
     public function show( string $id)
     {
     
-        return User::find($id);
+      $userShow=User::find($id);
+        return response()->json([
+          $userShow
+        ], 201);
     }
 
     /**
@@ -82,8 +107,13 @@ class UsersController extends Controller
         // return $request;
         
         $id->update($request->all());
-        return User::find($id);
-        return redirect('id');
+
+        $userUpdate=User::find($id);
+        return response()->json([
+          $userUpdate
+        ], 201);
+
+        //return redirect('id');
         // $aa=User::find($id);
         // return $aa;
         // $affected = User::table('users')
@@ -99,7 +129,15 @@ class UsersController extends Controller
      */
     public function destroy(user $id)
     {
-        $user->delete();
-        return 'успешно '
+        // $users = DB::table('personal_access_tokens')->distinct()->get();
+        //  $users->delete();
+         
+        $id->delete();
+     
+        return response()->json([
+           'status' => 'ok',
+        ], 201);
+       // $user_name = User::where('name',$request->query('name'))->first();
+        //     if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
     }
 }

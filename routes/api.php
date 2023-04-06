@@ -24,9 +24,10 @@ use App\Http\Controllers\api\logController;
 */
 
 Route::middleware('auth:sanctum')->group(function() {
-    Route::get('/users/self', [UsersController::class, 'self']);
+    //Route::get('/users/self', [UsersController::class, 'self']);
     
 });
+Route::get('/users/self', [UsersController::class, 'self']);
 //Route::apiresource('/users',UsersController::class);
 Route::post('/users/register', [UsersController::class, 'register']);
 Route::get('/users/index', [UsersController::class, 'index']);
