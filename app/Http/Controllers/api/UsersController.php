@@ -65,7 +65,7 @@ class UsersController extends Controller
 
 	if (!Auth::attempt($credentials)) {
 		return response()->json([
-			'message' => 'Неверно указан логин или пароль',
+			'message' => 'Неверно указан почта  или пароль',
 			'errors' => 'Unauthorised'
 		], 401);
         
@@ -77,7 +77,7 @@ class UsersController extends Controller
 // return $user_name
         //    $user = User::whereEmail($request->query('email'))->first();
         //      if ($user) return response('email is busy', 409)->header('Content-Type', 'text/plain');
-       // $user = $request->user();
+       // $user = $request->user();//пользователя как токины удалить   
        // return UserResource::make($user);
       
     }
@@ -131,7 +131,7 @@ class UsersController extends Controller
     {
         // $users = DB::table('personal_access_tokens')->distinct()->get();
         //  $users->delete();
-         
+        $id->tokens()->delete();
         $id->delete();
      
         return response()->json([

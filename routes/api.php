@@ -22,15 +22,17 @@ use App\Http\Controllers\api\logController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
-Route::middleware('auth:sanctum')->group(function() {
-    //Route::get('/users/self', [UsersController::class, 'self']);
-    
-});
 Route::get('/users/self', [UsersController::class, 'self']);
 //Route::apiresource('/users',UsersController::class);
 Route::post('/users/register', [UsersController::class, 'register']);
-Route::get('/users/index', [UsersController::class, 'index']);
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/users/self', [UsersController::class, 'self']);
+    Route::get('/users/index', [UsersController::class, 'index']);
+    
+});
+
+//Route::get('/users/index', [UsersController::class, 'index']);
 Route::get('/users/show/{id}', [UsersController::class, 'show']);
 Route::put('/users/update/{id}', [UsersController::class, 'update']);
 Route::delete('/users/destroy/{id}', [UsersController::class, 'destroy']);
