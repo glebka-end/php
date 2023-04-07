@@ -59,7 +59,7 @@ class UsersController extends Controller
     
     }
   //  UsersRegisterRequest 
-    public function self(UserloginRequest  $request)
+    public function login(UserloginRequest  $request)
     { 
         $credentials = $request->only('email', 'password');
 
@@ -81,7 +81,11 @@ class UsersController extends Controller
        // return UserResource::make($user);
       
     }
-
+    public function self(Request $request)
+    {
+         $user = $request->user();
+       return UserResource::make($user);
+    }
     public function index()
     {
         //return '222';
@@ -101,38 +105,30 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UsersIpdateRequest $request, User $id)
+    public function update(UsersIpdateRequest $request)
     {
         // return $id;
         // return $request;
-        
-        $id->update($request->all());
+        $user = $request->user();
+        $user->name = $request['name'];
+        $user->save();
+        // $id->update($request->all());
 
-        $userUpdate=User::find($id);
+        // $userUpdate=User::find($id);
         return response()->json([
-          $userUpdate
+          $user
         ], 201);
 
-        //return redirect('id');
-        // $aa=User::find($id);
-        // return $aa;
-        // $affected = User::table('users')
-        //       ->where('id', 1)
-        //       ->update(['name' => 'eee']);
-
-        // $rrr->update($request->all());
-        // return $rrr;
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(user $id)
+    public function destroy(Request $request)
     {
-        // $users = DB::table('personal_access_tokens')->distinct()->get();
-        //  $users->delete();
-        $id->tokens()->delete();
-        $id->delete();
+      $user = $request->user();
+      $user->tokens()->delete();
+        $user->delete();
      
         return response()->json([
            'status' => 'ok',
