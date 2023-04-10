@@ -11,6 +11,7 @@ use App\Http\Controllers\api\UsersController;//
 use Doctrine\DBAL\Schema\Index;
 use phpseclib3\File\ASN1\Maps\Name;
 use App\Http\Controllers\api\logController;
+use App\Http\Controllers\api\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,12 +28,15 @@ Route::post('/users/register', [UsersController::class, 'register']);
 Route::get('/users/login', [UsersController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function() {
  
-   Route::get('/users/self', [UsersController::class, 'self']);
-  // Route::get('/users/index', [UsersController::class, 'index']);
-    Route::get('/users/show', [UsersController::class, 'show']);
+Route::get('/users/self', [UsersController::class, 'self']);
+Route::get('/users/show', [UsersController::class, 'show']);
 Route::put('/users/update', [UsersController::class, 'update']);
 Route::delete('/users/destroy', [UsersController::class, 'destroy']);
     
+//Route::apiResource('/post',PostController::class);
+Route::get('/post/index', [PostController::class, 'index']);    
+Route::get('/post/create', [PostController::class, 'create']);    
+
 });
 
 //Route::get('/users/index', [UsersController::class, 'index']);
