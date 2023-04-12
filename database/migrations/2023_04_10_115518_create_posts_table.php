@@ -13,20 +13,16 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
-         //   $table->foreign('id','post_comments_fk')->on('comments')->references('id_post');
-        //    $table->id('id_user');
-           
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+
             $table->string('title');
             $table->text('contente');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('likes')->nullable();
             $table->boolean('isPublished')->default(1);
             $table->timestamps();
-
-           // $table->unsignedBigInteger();
-           // $table->timestamps();
-           // $table->timestamps();
-
+         
         });
     }
     /**

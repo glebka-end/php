@@ -33,29 +33,6 @@ class UsersController extends Controller
             'user' => UserResource::make($user),
             'token' => $token,
         ], 201);
-
-
-
-
-
-//         return $request->all();
-//         $user_name = User::where('name',$request->query('name'))->first();
-//     if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
-//     $user = User::whereEmail($request->query('email'))->first();
-//      if ($user) return response('email is busy', 409)->header('Content-Type', 'text/plain');
-
-    
-  
-//    $request['password']=Hash::make($request['password']);     //passwors
-//    $request['remember_token'] = Str::random(10);
- 
-//    $user = User::create($request->toArray());
-   
-//    $token = $user->createToken('Laravel Password Grant Client')->plainTextToken;
-//    $response = ['token' => $token];
-   //$user = User::create($token->all());
-
-   // return response($response, 200);
     
     }
   //  UsersRegisterRequest 
@@ -70,70 +47,72 @@ class UsersController extends Controller
 		], 401);
         
 	}
-        
-        return 'красава ';
-//         $user_name = User::where('name',$request->query('name'))->first();
-//             if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
-// return $user_name
-        //    $user = User::whereEmail($request->query('email'))->first();
-        //      if ($user) return response('email is busy', 409)->header('Content-Type', 'text/plain');
-       // $user = $request->user();//пользователя как токины удалить   
-       // return UserResource::make($user);
-      
+      $user = User::where('email', $request->email)->first();
+      $token = $token = $user->createToken('login')->plainTextToken;
+
+      return response()->json([
+        'user' => UserResource::make($user),
+        'token' => $token,
+      ], 201);  
     }
     public function self(Request $request)
     {
-         $user = $request->user();
+       $user = $request->user();
        return UserResource::make($user);
     }
     public function index()
     {
-        //return '222';
+       
         return UserResource::collection(User::paginate());
     }
 
   
-    public function show( string $id)
+    public function show( User $user)
     {
     
-      $userShow=User::find($id);
-        return response()->json([
-          $userShow
-        ], 201);
+      // $user = User::findOrFail($id);
+      // return UserResource::make($user);
+      
+      // $userShow=User::find($id);
+      //   return response()->json([
+      //     $user
+      //   ], );
+
+             return UserResource::make($user);
+
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UsersIpdateRequest $request)
+    public function selfUpdate(UsersIpdateRequest $request)
     {
-        // return $id;
-        // return $request;
+        
         $user = $request->user();
         $user->name = $request['name'];
         $user->save();
-        // $id->update($request->all());
+       
+    
+       
+         return UserResource::make($user);
 
-        // $userUpdate=User::find($id);
-        return response()->json([
-          $user
-        ], 201);
+        
 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
+    public function selfDestroy(Request $request)
     {
       $user = $request->user();
       $user->tokens()->delete();
-        $user->delete();
-     
+      $user->delete();
+
         return response()->json([
-           'status' => 'ok',
-        ], 201);
-       // $user_name = User::where('name',$request->query('name'))->first();
-        //     if ($user_name) return response('name is busy', 409)->header('Content-Type', 'text/plain');
+        'status' => 'ok',
+        ], 204);
+      
     }
 }

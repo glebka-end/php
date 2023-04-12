@@ -23,9 +23,9 @@ class UserloginRequest extends FormRequest
     {
         return [
             //'email' => 'required|email|unique:users,email',  
-             'email' => 'email',      //тут провека на email и чтобы не !совп валидация
+             'email' => 'required|max:255',      //тут провека на email и чтобы не !совп валидация
             // 'name' => 'required|string|max:255',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'required|max:255',
           
         ];
     }
