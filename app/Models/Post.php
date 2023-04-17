@@ -18,5 +18,5 @@ class post extends Model
     {
         return $this->hasMany(Comment::class);//
     }//
-
+  
 }

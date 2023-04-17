@@ -13,16 +13,22 @@ use PhpParser\Node\Expr\AssignOp\Pow;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
     public function store(PostCreatRequest $request)
     {
+
+      $path=  Storage::putFile('attachments/'.Carbon::now()->format('Y-m-d'), $request->file('a'), 'public');
+       // $path = $request->file('a')->store('public');
+        //  return $path;
         $user = $request->user();
         $post = $user->posts()->create([
             'title' => $request->title,
             'contente' => $request->contente,
-            'image' => $request->image,
+            'image' => $path,
             'likes' => 0,
             'isPublished' => 1,
         ]);
@@ -79,6 +85,7 @@ class PostController extends Controller
      */
     public function show(User $user, $postId)
     {
+        //   return $postId;
         $post = $user->posts()->findOrFail($postId); //для одного 
 
         return PostResource::make($post);
@@ -94,7 +101,7 @@ class PostController extends Controller
         //    $post = $request->user();
 
         $post->title = $request['title'];
-        $post->contente= $request['tcontente'];
+        $post->contente = $request['tcontente'];
         $post->title = $request['title'];
         $post->save();
 
@@ -107,13 +114,34 @@ class PostController extends Controller
      */
     public function selfDestroyPost(PostCreatRequest $request, User $user, $postId)
     {
-        
-        $post = $user->posts()->findOrFail($postId);//для одного 
+
+        $post = $user->posts()->findOrFail($postId); //для одного 
         $post->delete();
-    
+
         return response()->json([
-          'status' => 'ok',
+            'status' => 'ok',
         ], 200);
     }
 
+    public function fil(Request $request)
+    {
+
+        //  $path = $request->file('a')->store('public');
+        //  return $path; 
+        //  return Storage::url('fWd7QQm1EfV2RIxk4GOgNVd0Wt73S7sPMQMligbn.png');
+       $file = $request->file('a');
+ 
+        $name = $file->getClientOriginalName();
+       $extension = $file->getClientOriginalExtension();
+     return $name ;
+//  Storage::disk('public/srorage')->url('APP_URL');
+      //  return Storage::url('fWd7QQm1EfV2RIxk4GOgNVd0Wt73S7sPMQMligbn.png');
+
+        //  echo asset('storage/file.jpg');
+     //   return Storage::download('public');
+        //  return Storage::download('file.jpg', $name, $headers);
+     //   $p = $request->store('uploads', 'public');
+     //   return $p;
+        //    return PostResource::make($post);
+    }
 }

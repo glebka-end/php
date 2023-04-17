@@ -4,8 +4,8 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
-class PostResource extends JsonResource
+
+class CommentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,13 +20,13 @@ class PostResource extends JsonResource
             // 'email' => $this->email,
             // 'password' => $this->password,
 
-            'id' => $this->id,
-            'title' => $this->title,
+            'user' => $this->user,
+            'post_id' => $this->post_id,
             'user_id'=> $this->user_id,
-            'contente' => $this->contente,
-            'image' => Storage::url($this->image),//оборач 
-            'likes' =>$this-> likes,   //comment
-            'isPublished' =>$this-> isPublished,
+            'comment' => $this->comment,
+            // 'image' => $this->image,
+            // 'likes' =>$this-> likes,   //comment
+            // 'isPublished' =>$this-> isPublished,
 
         ];
     }

@@ -4,14 +4,14 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UsersRegisterRequest extends FormRequest
+class CommentCreatRequests extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true; 
+        return true;
     }
 
     /**
@@ -22,9 +22,11 @@ class UsersRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users,email',     //тут провека на email и чтобы не !совп валидация
-            'name' => 'required|string|max:255',
-            'password' => 'required|confirmed|min:6',
+           // 'email' => 'required|email|unique:users,email',     //тут провека на email и чтобы не !совп валидация
+           
+            'comment' => 'required|string|max:255',
+    
+           // 'likes' => 'required|confirmed|min:6',
         ];
     }
 }
