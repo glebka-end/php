@@ -48,8 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('users/post/{post}/comments', [CommentController::class, 'store']);
     Route::get('posts/{post}/comments', [CommentController::class, 'index']);
-    Route::get('posts/{post}/comments/{comment}', [CommentController::class, 'show']);
-    Route::put('posts/{post}/comments/{comment}', [CommentController::class, 'selfUpdateComment']);
-    Route::delete('/user/post/{post}/comment/{comment}', [CommentController::class, 'selfDestroyComment']);
+    Route::get('posts/{post}/comments/{commentId}', [CommentController::class, 'show']);
+    Route::put('posts/{post}/comments/{commentId}', [CommentController::class, 'selfUpdateComment']);
+    Route::delete('posts/{post}/comments/{commentid}', [CommentController::class, 'selfDestroyComment']);
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
+Route::get('/user/fill', [LogController::class, 'fill']);

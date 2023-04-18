@@ -15,14 +15,12 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-
             $table->string('title');
             $table->text('contente');
             $table->string('image')->nullable();
             $table->unsignedBigInteger('likes')->nullable();
             $table->boolean('isPublished')->default(1);
             $table->timestamps();
-         
         });
     }
     /**
