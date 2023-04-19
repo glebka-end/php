@@ -54,3 +54,4 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
 Route::get('/user/fill', [LogController::class, 'fill']);
+Route::get('/user/tabl', [LogController::class, 'tabl']);
