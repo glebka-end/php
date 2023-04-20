@@ -14,6 +14,7 @@ use phpseclib3\File\ASN1\Maps\Name;
 use App\Http\Controllers\api\logController;
 use App\Http\Controllers\api\PostController;
 use App\Http\Controllers\api\CommentController;
+use App\Http\Controllers\api\LikeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,13 +46,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{user}/post/{post}', [PostController::class, 'show']);
     Route::put('/users/{user}/post/{post}', [PostController::class, 'selfUpdatePost']);
     Route::delete('/users/{user}/post/{post}', [PostController::class, 'selfDestroyPost']);
+   // Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);
 
     Route::post('users/post/{post}/comments', [CommentController::class, 'store']);
     Route::get('posts/{post}/comments', [CommentController::class, 'index']);
     Route::get('posts/{post}/comments/{commentId}', [CommentController::class, 'show']);
     Route::put('posts/{post}/comments/{commentId}', [CommentController::class, 'selfUpdateComment']);
     Route::delete('posts/{post}/comments/{commentid}', [CommentController::class, 'selfDestroyComment']);
+
+    Route::get('user/like', [LikeController::class, 'index']);
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
 Route::get('/user/fill', [LogController::class, 'fill']);
 Route::get('/user/tabl', [LogController::class, 'tabl']);
+
+
+Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);

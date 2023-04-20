@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\PostCreatRequest;
 use PhpParser\Node\Expr\AssignOp\Pow;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
@@ -21,8 +20,8 @@ class PostController extends Controller
     public function store(PostCreatRequest $request)
     {
 
-      $path=  Storage::putFile('attachments/'.Carbon::now()->format('Y-m-d'), $request->file('a'), 'public');
-       // $path = $request->file('a')->store('public');
+        $path =  Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('a'), 'public');
+        // $path = $request->file('a')->store('public');
         //  return $path;
         $user = $request->user();
         $post = $user->posts()->create([
@@ -129,19 +128,41 @@ class PostController extends Controller
         //  $path = $request->file('a')->store('public');
         //  return $path; 
         //  return Storage::url('fWd7QQm1EfV2RIxk4GOgNVd0Wt73S7sPMQMligbn.png');
-       $file = $request->file('a');
- 
+        $file = $request->file('a');
+
         $name = $file->getClientOriginalName();
-       $extension = $file->getClientOriginalExtension();
-     return $name ;
-//  Storage::disk('public/srorage')->url('APP_URL');
-      //  return Storage::url('fWd7QQm1EfV2RIxk4GOgNVd0Wt73S7sPMQMligbn.png');
+        $extension = $file->getClientOriginalExtension();
+        return $name;
+        //  Storage::disk('public/srorage')->url('APP_URL');
+        //  return Storage::url('fWd7QQm1EfV2RIxk4GOgNVd0Wt73S7sPMQMligbn.png');
 
         //  echo asset('storage/file.jpg');
-     //   return Storage::download('public');
+        //   return Storage::download('public');
         //  return Storage::download('file.jpg', $name, $headers);
-     //   $p = $request->store('uploads', 'public');
-     //   return $p;
+        //   $p = $request->store('uploads', 'public');
+        //   return $p;
         //    return PostResource::make($post);
+    }
+
+
+    public function ShowLike($postId,User $user)
+    {
+       // return  $postId;
+       $post = Post::with('userLikes')->find($postId);
+     //  return  $post;
+
+     $post=Post::find(4);
+     $user=User::find(1);
+     $post->userLikes()->toggle($user);
+         //$post->userLikes()->get();
+        $post= $post->userLikes()->count();
+        // $post->userLikes()->toggle($user);
+       return  $post;
+        // $post->userLikes()->toggle($user)
+        // $post->userLikes()->count()
+       
+        // return response()->json([
+        //     'status' => 'ok',
+        // ], 200);
     }
 }

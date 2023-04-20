@@ -9,6 +9,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;//
 use Illuminate\Database\Eloquent\Relations\HasOne;//
+use Illuminate\Database\Eloquent\Relations\MorphToMany;//
+
 class User extends Authenticatable
 
 {
@@ -56,5 +58,23 @@ class User extends Authenticatable
 {
     return $this->hasOne(Profile::class);
 }
+
+// public function CommentLike(): MorphToMany
+// {
+//     return $this->morphedByMany(Comment::class, 'likable');
+// }
+
+// public function postsLike(): MorphToMany
+// {
+//     return $this->morphedByMany(Post::class, 'taggable');
+// }
+
+// /**
+//  * Get all of the videos that are assigned this tag.
+//  */
+// public function commentLike(): MorphToMany
+// {
+//     return $this->morphedByMany(Comment::class, 'taggable');
+// }
 }
 
