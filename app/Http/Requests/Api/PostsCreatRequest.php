@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CommentCreatRequests extends FormRequest
+class PostsCreatRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +23,9 @@ class CommentCreatRequests extends FormRequest
     {
         return [
            // 'email' => 'required|email|unique:users,email',     //тут провека на email и чтобы не !совп валидация
-           
-            'comment' => 'required|string|max:255',
-    
+            'title' => 'required|string|max:50',
+            'contente' => 'required|string|max:255',
+            'image' => '|file|max:255',
            // 'likes' => 'required|confirmed|min:6',
         ];
     }

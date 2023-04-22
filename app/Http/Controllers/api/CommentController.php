@@ -7,20 +7,16 @@ use App\Models\User;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Api\CommentCreatRequests;
+
 use App\Http\Resources\Api\CommentResource;
-use App\Http\Requests\Api\CommentCreatRequest;
+use App\Http\Requests\Api\CommentsCreatRequests;
 
 
 class CommentController extends Controller
 {
-  public function store(CommentCreatRequests $request, $postId)
+  public function store(CommentsCreatRequests $request, $postId)
   {
-    //return $postId;
-    //$path = $request->file('a')->store('public');
-    //  return $path;
-    // $user = $request->user();
-    // $post = $user->posts()->create([
+    // $post = $user->posts()->create([sss
     //     'title' => $request->title,
     //     'contente' => $request->contente,
     //     'image' => $request->image,
@@ -28,17 +24,17 @@ class CommentController extends Controller
     //     'isPublished' => 1,
     // ]);
 
-    $Comment = Comment::create([
-
+    $comment = Comment::create([
       'user_id' => $request->user()->id,
       'post_id' => $postId,
       'comment' => $request->comment,
-    
+      // $comment = $postId->comments()->create([    return  "message": "Call to a member function comments() on string",
+      //   'user_id' => $request->user()->id,
+      //   'comment' => $request->comment,
+
     ]);
-    return CommentResource::make($Comment);
-    
 
-
+    return CommentResource::make($comment);
     // $user = $request->user();
     // $poste = $user->comments()->create([
     //     'comment' => $request->contente,
@@ -57,9 +53,9 @@ class CommentController extends Controller
   }
 
 
-  public function index(Request $request, Post $post)
+  public function index(Request $request, Post $postId)
   {
-    $comment = $post->comments()->paginate();
+    $comment = $postId->comments()->paginate();
     return CommentResource::collection($comment);
 
     //  $postt=1;
@@ -80,25 +76,24 @@ class CommentController extends Controller
   //     //   ], 201);
   // }
 
-  
-  public function show(Post $post, $commentId)
+
+  public function show(Post  $postId, $commentId)
   {
-    $comment = $post->comments()->findOrFail($commentId); //для одного 
+    $comment =  $postId->comments()->findOrFail($commentId); //для одного 
     return CommentResource::make($comment);
   }
 
-  public function selfUpdateComment(CommentCreatRequests $request, Post $post, $commentId)
+  public function update(CommentsCreatRequests $request, Post  $postId, $commentId)
   {
     $user = $request->user();
- 
-    $comment = $post
+    $comment =  $postId
       ->comments()
       ->where('user_id', $user->id)
       ->findOrFail($commentId);
-
     $comment = $comment->update([
       'comment' => $request->comment,
     ]);
+
     // $comment->comment = $request['comment'];
     // $comment->save();
 
@@ -108,10 +103,10 @@ class CommentController extends Controller
   /**
    * Remove the specified resource from storage.
    */
-  public function selfDestroyComment(Post $post, $commentId)
+  public function destroy(Post  $postId, $commentId)
   {
 
-    $comment = $post->comments()->findOrFail($commentId); //для одного 
+    $comment =  $postId->comments()->findOrFail($commentId); //для одного 
     $comment->delete();
 
     return response()->json([

@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\Comment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Api\PostCreatRequest;
+use App\Http\Requests\Api\PostsCreatRequest;
 use PhpParser\Node\Expr\AssignOp\Pow;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -17,9 +17,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    public function store(PostCreatRequest $request)
+    public function store(PostsCreatRequest $request)
     {
-
         $path =  Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('a'), 'public');
         // $path = $request->file('a')->store('public');
         //  return $path;
@@ -28,10 +27,8 @@ class PostController extends Controller
             'title' => $request->title,
             'contente' => $request->contente,
             'image' => $path,
-            'likes' => 0,
             'isPublished' => 1,
         ]);
-
         //    $post = Post::updated ([
         //         'title' => $request->title,
         //         'user_id'=> $request->user()->id,
@@ -52,14 +49,8 @@ class PostController extends Controller
         //  $postt=1;
         //  $postALL = Post::find($postt);
         //  $comments = Post::find($postt)->comments;
-
-
-
-
-        //  $ee = $comments->id;
-
+        //  $ee = $comments->id
         //echo $comments->id;
-
         // foreach ($comments as $comment) {
         ///    echo $comment;
         // }
@@ -69,13 +60,10 @@ class PostController extends Controller
         // $post= Post::where('id')->get();
         // return $post;
         //  return $Comment=comment::find(1);
-        // $user_name = Comment::where('post_id',$request->query('name'))->first();
-
+        // $user_name = Comment::where('post_id',$request->query('name'))->first()
         // return response()->json([
-
         //    $postALL,
         //    $comments
-
         //   ], 201);
     }
 
@@ -84,39 +72,40 @@ class PostController extends Controller
      */
     public function show(User $user, $postId)
     {
-        //   return $postId;
-        $post = $user->posts()->findOrFail($postId); //для одного 
 
+        //  $post = $user->posts()->findOrFail($postId); //для одного 
+        $post = Post::find($postId);
         return PostResource::make($post);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function selfUpdatePost(PostCreatRequest $request, User $user, $postId)
+    public function update(PostsCreatRequest $request, User $user, $postId)
     {
-        //поля лишнее картинку storeg like 
+
+        $user = $request->user();
         $post = $user->posts()->findOrFail($postId);
-        //    $post = $request->user();
 
-        $post->title = $request['title'];
-        $post->contente = $request['tcontente'];
-        $post->title = $request['title'];
+        $post->title = $request->title;
+        $post->contente = $request->contente;
         $post->save();
-
-
+        // $post->update([
+        //     'title' => $request->title,
+        //     'contente' => $request->content,     // есть такой вариант 
+        //     'title' => $request->title,
+        // ]);
         return PostResource::make($post);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function selfDestroyPost(PostCreatRequest $request, User $user, $postId)
+    public function destroy(PostsCreatRequest $request, User $user, $postId)
     {
-
+        $user = $request->user();
         $post = $user->posts()->findOrFail($postId); //для одного 
         $post->delete();
-
         return response()->json([
             'status' => 'ok',
         ], 200);
@@ -145,22 +134,22 @@ class PostController extends Controller
     }
 
 
-    public function ShowLike($postId,User $user)
+    public function showLike($postId, User $user)
     {
-       // return  $postId;
-       $post = Post::with('userLikes')->find($postId);
-     //  return  $post;
+        // return  $postId;
+        $post = Post::with('userLikes')->find($postId);
+        return  $post;
 
-     $post=Post::find(4);
-     $user=User::find(1);
-     $post->userLikes()->toggle($user);
-         //$post->userLikes()->get();
-        $post= $post->userLikes()->count();
+        $post = Post::find(4);
+        $user = User::find(1);
+        $post->userLikes()->toggle($user);
+        //$post->userLikes()->get();
+        $post = $post->userLikes()->count();
         // $post->userLikes()->toggle($user);
-       return  $post;
+        return  $post;
         // $post->userLikes()->toggle($user)
         // $post->userLikes()->count()
-       
+
         // return response()->json([
         //     'status' => 'ok',
         // ], 200);

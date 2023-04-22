@@ -43,18 +43,18 @@ Route::middleware('auth:sanctum')->group(function () {
     //Route::apiResource('/post',PostController::class);
     Route::post('/users/self-new-post', [PostController::class, 'store']);
     Route::get('/users/{userId}/posts', [PostController::class, 'index']);
-    Route::get('/users/{user}/post/{post}', [PostController::class, 'show']);
-    Route::put('/users/{user}/post/{post}', [PostController::class, 'selfUpdatePost']);
-    Route::delete('/users/{user}/post/{post}', [PostController::class, 'selfDestroyPost']);
+    Route::get('/users/post/{postId}', [PostController::class, 'show']);
+    Route::put('/users/post/{postId}', [PostController::class, 'update']);
+    Route::delete('/users/post/{postId}', [PostController::class, 'destroy']);
    // Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);
 
-    Route::post('users/post/{post}/comments', [CommentController::class, 'store']);
-    Route::get('posts/{post}/comments', [CommentController::class, 'index']);
-    Route::get('posts/{post}/comments/{commentId}', [CommentController::class, 'show']);
-    Route::put('posts/{post}/comments/{commentId}', [CommentController::class, 'selfUpdateComment']);
-    Route::delete('posts/{post}/comments/{commentid}', [CommentController::class, 'selfDestroyComment']);
+    Route::post('users/post/{postId}/comments', [CommentController::class, 'store']);
+    Route::get('posts/{postId}/comments', [CommentController::class, 'index']);
+    Route::get('posts/{postId}/comments/{commentId}', [CommentController::class, 'show']);
+    Route::put('posts/{postId}/comments/{commentId}', [CommentController::class, 'update']);
+    Route::delete('posts/{postId}/comments/{commentid}', [CommentController::class, 'destroy']);
 
-    Route::get('user/like', [LikeController::class, 'index']);
+   
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
 Route::get('/user/fill', [LogController::class, 'fill']);

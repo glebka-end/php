@@ -16,8 +16,8 @@ return new class extends Migration
                 $table->morphs('likable');
                 $table->unsignedBigInteger('user_id');
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-        })
-
+        });
+    }
     /**
      * Reverse the migrations.
      */
@@ -26,3 +26,5 @@ return new class extends Migration
         Schema::dropIfExists('likables');
     }
 };
+
+

@@ -7,12 +7,12 @@ use App\Http\Requests\Api\UsersRegisterRequest;
 
 use App\Http\Resources\Api\UserResource;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\UsersIpdateRequest;
+use App\Http\Requests\Api\UsersSeIfUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\Api\UserloginRequest;
+use App\Http\Requests\Api\UsersloginRequest;
 
 
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +39,7 @@ class UsersController extends Controller
     ], 201);
   }
   //  UsersRegisterRequest 
-  public function login(UserloginRequest  $request)
+  public function login(UsersloginRequest  $request)
   
   {
     
@@ -73,26 +73,15 @@ class UsersController extends Controller
 
   public function show(User $user)
   {
-
-    // $user = User::findOrFail($id);
-    // return UserResource::make($user);
-
-    // $userShow=User::find($id);
-    //   return response()->json([
-    //     $user
-    //   ], );
-
     return UserResource::make($user);
   }
 
-  /**
-   * Update the specified resource in storage.
-   */
-  public function selfUpdate(UsersIpdateRequest $request)
+  
+  public function selfUpdate(UsersSelfUpdateRequest $request)
   {
 
     $user = $request->user();
-    $user->name = $request['name'];
+    $user->name = $request ->name;
     $user->save();
 
 
@@ -106,6 +95,8 @@ class UsersController extends Controller
   public function selfDestroy(Request $request)
   {
     $user = $request->user();
+    $posts = $user->posts()->paginate()->delete();
+    $comment = $user->comments()->paginate()->delete();//нудна тестить 
     $user->tokens()->delete();
     $user->delete();
 
