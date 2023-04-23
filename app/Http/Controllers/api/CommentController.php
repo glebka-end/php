@@ -55,8 +55,10 @@ class CommentController extends Controller
 
   public function index(Request $request, Post $postId)
   {
-    $comment = $postId->comments()->paginate();
+   // $comment = $postId->comments()->paginate();
+    $comment = Comment::withCount('userLikes')->all();
     return CommentResource::collection($comment);
+    
 
     //  $postt=1;
     //  $postALL = Post::find($postt);
@@ -77,9 +79,10 @@ class CommentController extends Controller
   // }
 
 
-  public function show(Post  $postId, $commentId)
+  public function show(Post  $postId, $commentId,User $user)
   {
-    $comment =  $postId->comments()->findOrFail($commentId); //для одного 
+   // $comment =  $postId->comments()->findOrFail($commentId); //для одного 
+   $comment = Comment::withCount('userLikes')->find($commentId);
     return CommentResource::make($comment);
   }
 

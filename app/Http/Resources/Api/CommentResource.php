@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api;
 
+use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,19 +16,16 @@ class CommentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // 'id' => $this->id,
-            // 'name' => $this->name,
-            // 'email' => $this->email,
-            // 'password' => $this->password,
-
-            'user' => $this->user,
+         //   'user' => $this->user,
             'post_id' => $this->post_id,
-            'user_id'=> $this->user_id,
+            'user_id' => $this->user_id,
             'comment' => $this->comment,
-            // 'image' => $this->image,
-            // 'likes' =>$this-> likes,   //comment
-            // 'isPublished' =>$this-> isPublished,
-
+            'likes_count' => $this->when(
+                isset($this->user_likes_count),
+                $this->user_likes_count
+            ),
+         //    'user' => UserResource::make($this->whenLoaded('user')),
+           // 'user_likes' => UserResource::collection($this->whenLoaded('userLikes')),
         ];
     }
 }

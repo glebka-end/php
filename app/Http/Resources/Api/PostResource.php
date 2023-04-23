@@ -27,7 +27,7 @@ class PostResource extends JsonResource
             'image' => Storage::url($this->image),//оборач 
             'likes' =>$this-> likes,   //comment
             'isPublished' =>$this-> isPublished,
-            'posts' => PostResource::collection($this->whenLoaded('comment')),
+            'posts' => PostResource::collection($this->whenLoaded('comments')),
 
         ];
     }
