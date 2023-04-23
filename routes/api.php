@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('posts/{postId}/comments/{commentId}', [CommentController::class, 'show']);
     Route::put('posts/{postId}/comments/{commentId}', [CommentController::class, 'update']);
     Route::delete('posts/{postId}/comments/{commentid}', [CommentController::class, 'destroy']);
-
+    Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);
    
 });
 Route::post('/users/fil', [PostController::class, 'fil']);

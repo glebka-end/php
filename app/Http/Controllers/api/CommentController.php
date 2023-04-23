@@ -55,9 +55,9 @@ class CommentController extends Controller
 
   public function index(Request $request, Post $postId)
   {
-   // $comment = $postId->comments()->paginate();
-    $comment = Comment::withCount('userLikes')->all();
-    return CommentResource::collection($comment);
+    $comment = $postId->comments()->paginate();
+    $commentt = Comment::withCount('userLikes');
+    return CommentResource::collection($comment, $commentt);
     
 
     //  $postt=1;

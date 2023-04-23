@@ -67,9 +67,6 @@ class PostController extends Controller
         //   ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $user, $postId)
     {
 
@@ -78,9 +75,6 @@ class PostController extends Controller
         return PostResource::make($post);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(PostsCreatRequest $request, User $user, $postId)
     {
 
@@ -98,9 +92,6 @@ class PostController extends Controller
         return PostResource::make($post);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(PostsCreatRequest $request, User $user, $postId)
     {
         $user = $request->user();
@@ -137,17 +128,17 @@ class PostController extends Controller
     public function showLike($postId, User $user)
     {
         // return  $postId;
-        $post = Post::with('userLikes')->find($postId);
-        return  $post;
+        //$post = Post::with('userLikes')->find($postId);
+      //  return  $post;
 
-        $post = Post::find(4);
-        $user = User::find(1);
+       $post = Post::find(4);
+      $user = User::find(1);
         $post->userLikes()->toggle($user);
         //$post->userLikes()->get();
         $post = $post->userLikes()->count();
         // $post->userLikes()->toggle($user);
-        return  $post;
-        // $post->userLikes()->toggle($user)
+        //return  $post;
+       return   $post->userLikes()->toggle($user);
         // $post->userLikes()->count()
 
         // return response()->json([
