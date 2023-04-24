@@ -47,13 +47,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/users/post/{postId}', [PostController::class, 'update']);
     Route::delete('/users/post/{postId}', [PostController::class, 'destroy']);
    // Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);
+   Route::get('/users/post/{post}/likes', [PostController::class, 'showLike']);
+   Route::put('/users/post/{post}/likes', [PostController::class, 'storeLike']);
+
 
     Route::post('users/post/{postId}/comments', [CommentController::class, 'store']);
     Route::get('posts/{postId}/comments', [CommentController::class, 'index']);
     Route::get('posts/{postId}/comments/{commentId}', [CommentController::class, 'show']);
     Route::put('posts/{postId}/comments/{commentId}', [CommentController::class, 'update']);
     Route::delete('posts/{postId}/comments/{commentid}', [CommentController::class, 'destroy']);
-    Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);
+    Route::put('/comment/{commentId}/likes', [CommentController::class, 'storeLike']);
+    Route::get('/comment/{commentId}/likes', [CommentController::class, 'showLike']);
    
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
@@ -61,4 +65,3 @@ Route::get('/user/fill', [LogController::class, 'fill']);
 Route::get('/user/tabl', [LogController::class, 'tabl']);
 
 
-Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Resources\Api\CommentResource;
 use App\Http\Requests\Api\CommentsCreatRequests;
+use Illuminate\Support\Facades\DB;
 
 
 class CommentController extends Controller
@@ -53,31 +54,16 @@ class CommentController extends Controller
   }
 
 
-  public function index(Request $request, Post $postId)
+  public function index(Request $request, int $postId)
   {
-    $comment = $postId->comments()->paginate();
-    $commentt = Comment::withCount('userLikes');
-    return CommentResource::collection($comment, $commentt);
-    
+    //$comment = $postId->comments()->paginate();
+   // $commentt = Comment::withCount('userLikes');
+  
+    $comment = Comment::where('post_id', $postId)->withCount('userLikes')->get();
+    return CommentResource::collection($comment);
 
-    //  $postt=1;
-    //  $postALL = Post::find($postt);
-    //  $comments = Post::find($postt)->comments;
 
   }
-  //     // $comments= $comments->comment;
-  //     //$post= Post::all();
-  //     // $Comment=comment::all();
-  //     // $post= Post::where('id')->get();
-  //     // return $post;
-  //     //  return $Comment=comment::find(1);
-  //     // $user_name = Comment::where('post_id',$request->query('name'))->first();
-  //     // return response()->json([
-  //     //    $postALL,
-  //     //    $comments
-  //     //   ], 201);
-  // }
-
 
   public function show(Post  $postId, $commentId,User $user)
   {
@@ -93,8 +79,8 @@ class CommentController extends Controller
       ->comments()
       ->where('user_id', $user->id)
       ->findOrFail($commentId);
-    $comment = $comment->update([
-      'comment' => $request->comment,
+     $comment = $comment->update([
+     'comment' => $request->comment,
     ]);
 
     // $comment->comment = $request['comment'];
@@ -116,6 +102,31 @@ class CommentController extends Controller
       'status' => 'ok',
     ], 200);
   }
+
+  // public function storeLike(Post  $postId, $commentId)
+  // {
+
+   
+
+  //   return response()->json([
+  //     'status' => 'ok',
+  //   ], 200);
+  // }
+  public function storeLike ($commentId, Request $request, User $user)
+    {
+      $comment =  $commentId
+      ->comments()
+      ->where('user_id', $user->id)
+      ->findOrFail($commentId);
+
+        $user = $request->user();
+         DB::table('likables')->insert(
+            ['likable_type' => 'App\Models\Comment ', 'user_id' => $user->id, 'likable_id' => $commentId]
+        );
+        return response()->json([
+          'status' => 'ok',
+        ], 200);
+    }
 
   // public function fil(Request $request)
   // {
