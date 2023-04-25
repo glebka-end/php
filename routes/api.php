@@ -4,8 +4,6 @@ use App\Models\User; //
 use Illuminate\Support\Facades\Hash; //
 use Illuminate\Support\Str; //
 
-use App\Http\Controllers\api\RegistrationController; //
-use App\Http\Controllers\PostControllerApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersController; //
@@ -14,7 +12,7 @@ use phpseclib3\File\ASN1\Maps\Name;
 use App\Http\Controllers\api\logController;
 use App\Http\Controllers\api\PostController;
 use App\Http\Controllers\api\CommentController;
-use App\Http\Controllers\api\LikeController;
+use App\Http\Controllers\api\FriendController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,6 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/comment/{commentId}/likes', [CommentController::class, 'storeLike']);
     Route::get('/comment/{commentId}/likes', [CommentController::class, 'showLike']);
    
+    Route::put('users/users/throwInFriends/{userId}', [FriendController::class, 'viewing']);
+    Route::get('users/users/throwInFriends/{userId}', [FriendController::class, 'index']);
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
 Route::get('/user/fill', [LogController::class, 'fill']);

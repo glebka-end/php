@@ -57,18 +57,16 @@ class CommentController extends Controller
   public function index(Request $request, int $postId)
   {
     //$comment = $postId->comments()->paginate();
-   // $commentt = Comment::withCount('userLikes');
-  
+    // $commentt = Comment::withCount('userLikes');
+
     $comment = Comment::where('post_id', $postId)->withCount('userLikes')->get();
     return CommentResource::collection($comment);
-
-
   }
 
-  public function show(Post  $postId, $commentId,User $user)
+  public function show(Post  $postId, $commentId, User $user)
   {
-   // $comment =  $postId->comments()->findOrFail($commentId); //для одного 
-   $comment = Comment::withCount('userLikes')->find($commentId);
+    // $comment =  $postId->comments()->findOrFail($commentId); //для одного 
+    $comment = Comment::withCount('userLikes')->find($commentId);
     return CommentResource::make($comment);
   }
 
@@ -79,8 +77,8 @@ class CommentController extends Controller
       ->comments()
       ->where('user_id', $user->id)
       ->findOrFail($commentId);
-     $comment = $comment->update([
-     'comment' => $request->comment,
+    $comment = $comment->update([
+      'comment' => $request->comment,
     ]);
 
     // $comment->comment = $request['comment'];
@@ -106,27 +104,35 @@ class CommentController extends Controller
   // public function storeLike(Post  $postId, $commentId)
   // {
 
-   
+
 
   //   return response()->json([
   //     'status' => 'ok',
   //   ], 200);
   // }
-  public function storeLike ($commentId, Request $request, User $user)
-    {
-      $comment =  $commentId
-      ->comments()
-      ->where('user_id', $user->id)
-      ->findOrFail($commentId);
-
-        $user = $request->user();
-         DB::table('likables')->insert(
-            ['likable_type' => 'App\Models\Comment ', 'user_id' => $user->id, 'likable_id' => $commentId]
-        );
-        return response()->json([
-          'status' => 'ok',
-        ], 200);
+  public function storeLike(int $commentId, Request $request, User $user)
+  {
+    $user = $request->user();
+    $a = 'App\Models\Comment';
+    if (DB::table('likables')->where('user_id',  $user->id)
+      ->where('likable_id', $commentId)
+      ->where('likable_type', $a)->exists()
+    ) {
+      return response()->json([
+        'like' => 'уже поставил',
+      ], 200);
+      DB::table('likables')->delete(
+        ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
+      );
+    } else {
+      DB::table('likables')->insert(
+        ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
+      );
+      return response()->json([
+        'like' => '+1',
+      ], 200);
     }
+  }
 
   // public function fil(Request $request)
   // {

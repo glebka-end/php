@@ -44,11 +44,11 @@ class PostController extends Controller
 
     public function index(Request $request, user $user, Post $post)
     {
-        $posts = $user->posts()->paginate();//что за хуйня 
-       return PostResource::collection($posts);
-      // $posts = Comment::where('post_id', $user)->withCount('userLikes')->get();
+        $posts = $user->posts()->paginate(); //что за хуйня 
         return PostResource::collection($posts);
-    
+        // $posts = Comment::where('post_id', $user)->withCount('userLikes')->get();
+        return PostResource::collection($posts);
+
         //  $postt=1;
         //  $postALL = Post::find($postt);
         //  $comments = Post::find($postt)->comments;
@@ -74,10 +74,8 @@ class PostController extends Controller
     {
 
         //  $post = $user->posts()->findOrFail($postId); //для одного 
-    $post = Post::withCount('userLikes')->find($postId);
-    return PostResource::make($post);
-      
-
+        $post = Post::withCount('userLikes')->find($postId);
+        return PostResource::make($post);
     }
 
     public function update(PostsCreatRequest $request, User $user, $postId)
@@ -130,59 +128,62 @@ class PostController extends Controller
     }
 
 
-    public function storeLike (  $postId, Request $request, User $user)
-    {   
-        $user = $request->user();
-         DB::table('likables')->insert(
-            ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
-        );
-
-        return response()->json([
-          'status' => 'ok',
-        ], 200);
-    }
-    public function showLike(int $postId, Request $request, User $user)
+    public function storeLike( int $postId, Request $request, User $user)
     {
-    //     $a= 'App\Models\Post';
-    //     $user = $request->user();
-    //     DB::table('likables')
-    //       ->where('likable_type', $a)
-    //       ->where('user_id' ,$user->id)
-    //       ->where('likable_id' , $postId);
-    //       //->findOrFail($commentId);
-    // //return 'ee';
-    //     //  $comment = $scomment->update([
-    //     //  'comment' => $request->comment,
-    //     // ]);
-    //     DB::table('likables')->insert(
-    //         ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
-    //     );
-    $user = $request->user();
-   $a='App\Models\Post';
-        if (DB::table('likables')->where('user_id',  $user->id  )->where('likable_id', $postId  )->where('likable_type', $a )->exists()) {
-         return "уже есть лафк _ Мудила ";   
-        }else {
+        $user = $request->user();
+        $a = 'App\Models\Post';
+        if ($v=DB::table('likables')->where('user_id',  $user->id)
+            ->where('likable_id', $postId)
+            ->where('likable_type', $a)->exists()
+        ) {
+           return response()->json([
+               'like' => 'уже поставил',
+           ], 200);
+        //    $v= DB::table('likables')->get(
+        //         ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
+        //     );
+            // $v->delete();
+        } else {
             DB::table('likables')->insert(
                 ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
             );
+            return response()->json([
+                'like' => '+1',
+            ], 200);
         }
-        
-    //    $post = Post::find(13);
-    //   $user = User::find(1);
-    //  $post->userLikes()->toggle($user);
-     //$post=1;
-    //   if (){
-    //     return '1w';
-    //   }
-       // return $post->userLikes()->get();
-         //return $post = $post->userLikes()->count();
-    //     $post->userLikes()->toggle($user);
-      //  return  $post;
-      // return   $post->userLikes()->toggle($user);
+    }
+    public function showLike(int $postId, Request $request, User $user)
+    {
+        //     $a= 'App\Models\Post';
+        //     $user = $request->user();
+        //     DB::table('likables')
+        //       ->where('likable_type', $a)
+        //       ->where('user_id' ,$user->id)
+        //       ->where('likable_id' , $postId);
+        //       //->findOrFail($commentId);
+        // //return 'ee';
+        //     //  $comment = $scomment->update([
+        //     //  'comment' => $request->comment,
+        //     // ]);
+        //     DB::table('likables')->insert(
+        //         ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
+        //     );
+        //    $post = Post::find(13);
+        //   $user = User::find(1);
+        //  $post->userLikes()->toggle($user);
+        //$post=1;
+        //   if (){
+        //     return '1w';
+        //   }
+        // return $post->userLikes()->get();
+        //return $post = $post->userLikes()->count();
+        //     $post->userLikes()->toggle($user);
+        //  return  $post;
+        // return   $post->userLikes()->toggle($user);
         // $post->userLikes()->count($user);
 
         // return response()->json([
         //     'status' => 'ok',
         // ], 200);
-        }
+    }
 }

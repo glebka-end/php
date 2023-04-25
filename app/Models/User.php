@@ -59,6 +59,11 @@ class User extends Authenticatable
     return $this->hasOne(Profile::class);
 }
 
+public function friends(): HasMany//potsssss
+    {
+        return $this->hasMany(Friend::class);//
+    }
+
 // public function CommentLike(): MorphToMany
 // {
 //     return $this->morphedByMany(Comment::class, 'likable');
