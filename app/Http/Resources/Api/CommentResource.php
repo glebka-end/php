@@ -16,7 +16,7 @@ class CommentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-         //   'user' => $this->user,
+            //   'user' => $this->user,
             'post_id' => $this->post_id,
             'user_id' => $this->user_id,
             'comment' => $this->comment,
@@ -24,8 +24,8 @@ class CommentResource extends JsonResource
                 isset($this->user_likes_count),
                 $this->user_likes_count
             ),
-         //    'user' => UserResource::make($this->whenLoaded('user')),
-           // 'user_likes' => UserResource::collection($this->whenLoaded('userLikes')),
+            'user' => UserResource::make($this->whenLoaded('user')),
+            
         ];
     }
 }

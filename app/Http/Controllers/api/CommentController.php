@@ -17,6 +17,8 @@ class CommentController extends Controller
 {
   public function store(CommentsCreatRequests $request, $postId)
   {
+    $post = Post::findOrFail($postId);
+    $li = Comment::where('post_id', $postId)->withCount('userLikes')->get();
     // $post = $user->posts()->create([sss
     //     'title' => $request->title,
     //     'contente' => $request->contente,
@@ -25,17 +27,20 @@ class CommentController extends Controller
     //     'isPublished' => 1,
     // ]);
 
-    $comment = Comment::create([
-      'user_id' => $request->user()->id,
-      'post_id' => $postId,
-      'comment' => $request->comment,
-      // $comment = $postId->comments()->create([    return  "message": "Call to a member function comments() on string",
-      //   'user_id' => $request->user()->id,
-      //   'comment' => $request->comment,
+    // $comment = Comment::create([
+    //   'user_id' => $request->user()->id,
+    //   'post_id' => $postId,
+    //   'comment' => $request->comment,
+    $comment = $post->comments()->create([
+        'user_id' => $request->user()->id,
+        'comment' => $request->comment,
+      ])
+      ->loadCount('userLikes')
+      ->load('user');
 
-    ]);
 
-    return CommentResource::make($comment);
+
+    return CommentResource::make($comment->loadCount('userLikes'));
     // $user = $request->user();
     // $poste = $user->comments()->create([
     //     'comment' => $request->contente,
@@ -110,28 +115,58 @@ class CommentController extends Controller
   //     'status' => 'ok',
   //   ], 200);
   // }
-  public function storeLike(int $commentId, Request $request, User $user)
+  public function storeLike($commentId, Request $request, User $user)
   {
+
     $user = $request->user();
-    $a = 'App\Models\Comment';
-    if (DB::table('likables')->where('user_id',  $user->id)
-      ->where('likable_id', $commentId)
-      ->where('likable_type', $a)->exists()
-    ) {
-      return response()->json([
-        'like' => 'уже поставил',
-      ], 200);
-      DB::table('likables')->delete(
-        ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
-      );
-    } else {
-      DB::table('likables')->insert(
-        ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
-      );
-      return response()->json([
-        'like' => '+1',
-      ], 200);
-    }
+
+    $result =  $user->commentLike()->toggle($commentId);
+
+    return response()->json([
+      'status' => count($result['attached']) === 0 ? false : true,
+    ]);
+
+    #if($result['attached']==)
+    return response()->json([
+      'like' => '+1',
+    ], 200);
+    // $a = 'App\Models\Comment';
+    // if (DB::table('likables')->where('user_id',  $user->id)
+    //   ->where('likable_id', $commentId)
+    //   ->where('likable_type', $a)->exists()
+    // ) {
+    //   $user->commentLike()->detach($commentId);
+    //   return response()->json([
+    //     'like' => 'удален',
+    //   ], 200);
+
+    // } else {
+    //   $user->commentLike()->attach($commentId);
+
+    //   return response()->json([
+    //     'like' => '+1',
+    //   ], 200);
+    // }
+
+    // $a = 'App\Models\Comment';
+    // if (DB::table('likables')->where('user_id',  $user->id)
+    //   ->where('likable_id', $commentId)
+    //   ->where('likable_type', $a)->exists()
+    // ) {
+    //   return response()->json([
+    //     'like' => 'уже поставил',
+    //   ], 200);
+    //   DB::table('likables')->delete(
+    //     ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
+    //   );
+    // } else {
+    //   DB::table('likables')->insert(
+    //     ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
+    //   );
+    //   return response()->json([
+    //     'like' => '+1',
+    //   ], 200);
+    // }
   }
 
   // public function fil(Request $request)

@@ -61,18 +61,18 @@ class User extends Authenticatable
 
 public function friends(): HasMany//potsssss
     {
-        return $this->hasMany(Friend::class);//
+        return $this->hasMany(Friend::class, 'friends');//
     }
 
-// public function CommentLike(): MorphToMany
-// {
-//     return $this->morphedByMany(Comment::class, 'likable');
-// }
+public function CommentLike(): MorphToMany
+{
+    return $this->morphedByMany(Comment::class, 'likable');
+}
 
-// public function postsLike(): MorphToMany
-// {
-//     return $this->morphedByMany(Post::class, 'taggable');
-// }
+public function postsLike(): MorphToMany
+{
+    return $this->morphedByMany(Post::class, 'likable');
+}
 
 // /**
 //  * Get all of the videos that are assigned this tag.

@@ -11,8 +11,5 @@ class friend extends Model
 {
     use HasFactory;
 
-    public function posts(): HasMany//potsssss
-    {
-        return $this->hasMany(Post::class);//
-    }
+    
 }
