@@ -7,55 +7,26 @@ use App\Models\User;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Http\Resources\Api\CommentResource;
 use App\Http\Requests\Api\CommentsCreatRequests;
 use Illuminate\Support\Facades\DB;
-
 
 class CommentController extends Controller
 {
   public function store(CommentsCreatRequests $request, $postId)
   {
     $post = Post::findOrFail($postId);
-    $li = Comment::where('post_id', $postId)->withCount('userLikes')->get();
-    // $post = $user->posts()->create([sss
-    //     'title' => $request->title,
-    //     'contente' => $request->contente,
-    //     'image' => $request->image,
-    //     'likes' => 0,
-    //     'isPublished' => 1,
-    // ]);
+    Comment::where('post_id', $postId)->withCount('userLikes')->get();
 
-    // $comment = Comment::create([
-    //   'user_id' => $request->user()->id,
-    //   'post_id' => $postId,
-    //   'comment' => $request->comment,
     $comment = $post->comments()->create([
-        'user_id' => $request->user()->id,
-        'comment' => $request->comment,
-      ])
+      'user_id' => $request->user()->id,
+      'comment' => $request->comment,
+    ])
       ->loadCount('userLikes')
       ->load('user');
-
-
-
+      
     return CommentResource::make($comment->loadCount('userLikes'));
-    // $user = $request->user();
-    // $poste = $user->comments()->create([
-    //     'comment' => $request->contente,
-    // ]);
-    //    return $poste;
-
-    //    $post = Post::updated ([
-    //         'title' => $request->title,
-    //         'user_id'=> $request->user()->id,
-    //         'contente' => $request->contente,
-    //         'image' => $request->image,
-    //         'likes' => 0,
-    //         'isPublished' => 1,
-    //     ]);
-    //  return PostResource::make($post);
+   
   }
 
 
@@ -64,7 +35,10 @@ class CommentController extends Controller
     //$comment = $postId->comments()->paginate();
     // $commentt = Comment::withCount('userLikes');
 
-    $comment = Comment::where('post_id', $postId)->withCount('userLikes')->get();
+    $comment = Comment::where('post_id', $postId)->get()
+    ->loadCount('userLikes')
+    ->load('user');
+
     return CommentResource::collection($comment);
   }
 

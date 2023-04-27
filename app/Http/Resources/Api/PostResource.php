@@ -15,23 +15,21 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // 'id' => $this->id,
-            // 'name' => $this->name,
-            // 'email' => $this->email,
-            // 'password' => $this->password,
-
+        
             'id' => $this->id,
             'title' => $this->title,
             'user_id'=> $this->user_id,
             'contente' => $this->contente,
-            'image' => Storage::url($this->image),//оборач 
-            'likes' =>$this-> likes,   //comment
+            'image' => Storage::url($this->image),
             'isPublished' =>$this-> isPublished,
-            'posts' => PostResource::collection($this->whenLoaded('comment')),
             'likes_count' => $this->when(
                 isset($this->user_likes_count),
                 $this->user_likes_count
-            ),
+            ), 
+            'user' => UserResource::make($this->whenLoaded('user')),
+           // 'comment' => CommentResource::make($this->whenLoaded('comment')),
+            'comment' => CommentResource::collection($this->whenLoaded('comments')),
+
         ];
     }
 }

@@ -21,60 +21,38 @@ class PostController extends Controller
     public function store(PostsCreatRequest $request)
     {
         $path =  Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('a'), 'public');
-        // $path = $request->file('a')->store('public');
-        //  return $path;
+
         $user = $request->user();
         $post = $user->posts()->create([
             'title' => $request->title,
             'contente' => $request->contente,
             'image' => $path,
             'isPublished' => 1,
-        ]);
-        //    $post = Post::updated ([
-        //         'title' => $request->title,
-        //         'user_id'=> $request->user()->id,
-        //         'contente' => $request->contente,
-        //         'image' => $request->image,
-        //         'likes' => 0,
-        //         'isPublished' => 1,
-        //     ]);
-        return PostResource::make($post);
+        ])
+            ->loadCount('userLikes')
+            ->load('user');
+
+        //return PostResource::make($post->loadCount('userLikes'));
+        return PostResource::make($post->loadCount('userLikes'));
     }
 
 
-    public function index(Request $request, user $user, Post $post)
+    public function index(int $user)
     {
-        $posts = $user->posts()->paginate(); //что за хуйня 
-        return PostResource::collection($posts);
-        // $posts = Comment::where('post_id', $user)->withCount('userLikes')->get();
-        return PostResource::collection($posts);
 
-        //  $postt=1;
-        //  $postALL = Post::find($postt);
-        //  $comments = Post::find($postt)->comments;
-        //  $ee = $comments->id
-        //echo $comments->id;
-        // foreach ($comments as $comment) {
-        ///    echo $comment;
-        // }
-        // $comments= $comments->comment;
-        //$post= Post::all();
-        // $Comment=comment::all();
-        // $post= Post::where('id')->get();
-        // return $post;
-        //  return $Comment=comment::find(1);
-        // $user_name = Comment::where('post_id',$request->query('name'))->first()
-        // return response()->json([
-        //    $postALL,
-        //    $comments
-        //   ], 201);
+        // $posts = $user->posts()->paginate();
+        $posts = Post::where('user_id', $user)->get()
+            ->loadCount('userLikes')
+            ->load('user')
+            ->load('comments');
+        return PostResource::collection($posts);
     }
 
     public function show(User $user, $postId)
     {
-
-        //  $post = $user->posts()->findOrFail($postId); //для одного 
-        $post = Post::withCount('userLikes')->find($postId);
+        $post = $user->posts()->findOrFail($postId);
+        // $postq = $user->posts()->findOrFail($postId); //для одного 
+        $post = Post::withCount('userLikes')->find($post);
         return PostResource::make($post);
     }
 
@@ -128,20 +106,20 @@ class PostController extends Controller
     }
 
 
-    public function storeLike( int $postId, Request $request, User $user)
+    public function storeLike(int $postId, Request $request, User $user)
     {
         $user = $request->user();
         $a = 'App\Models\Post';
-        if ($v=DB::table('likables')->where('user_id',  $user->id)
+        if ($v = DB::table('likables')->where('user_id',  $user->id)
             ->where('likable_id', $postId)
             ->where('likable_type', $a)->exists()
         ) {
-           return response()->json([
-               'like' => 'уже поставил',
-           ], 200);
-        //    $v= DB::table('likables')->get(
-        //         ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
-        //     );
+            return response()->json([
+                'like' => 'уже поставил',
+            ], 200);
+            //    $v= DB::table('likables')->get(
+            //         ['likable_type' => 'App\Models\Post ', 'user_id' => $user->id, 'likable_id' => $postId]
+            //     );
             // $v->delete();
         } else {
             DB::table('likables')->insert(

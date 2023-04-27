@@ -48,12 +48,13 @@ class User extends Authenticatable
 
     public function posts(): HasMany//potsssss
     {
-        return $this->hasMany(Post::class);//
+        return $this->hasMany(Post::class, 'user_id');//
     }
-    // public function profileUser(): HasOne
-    // {
-    //     return $this->hasOne(ProfileUser::class);
-    // }
+    public function comments(): HasMany//potsssss
+    {
+        return $this->hasMany(Post::class, );//
+    }
+   
     public function profile()
 {
     return $this->hasOne(Profile::class);
@@ -61,7 +62,7 @@ class User extends Authenticatable
 
 public function friends(): HasMany//potsssss
     {
-        return $this->hasMany(Friend::class, 'friends');//
+        return $this->hasMany(Friend::class, );//
     }
 
 public function CommentLike(): MorphToMany

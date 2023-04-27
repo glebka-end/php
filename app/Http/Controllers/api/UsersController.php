@@ -3,26 +3,22 @@
 namespace App\Http\Controllers\api;
 
 use App\Models\User;
+use App\Models\Profile;
 use App\Http\Requests\Api\UsersRegisterRequest;
-
 use App\Http\Resources\Api\UserResource;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\UsersSeIfUpdateRequest;
+use App\Http\Requests\Api\UsersSelfUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\Api\UsersloginRequest;
-
-
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   */
+
   public function register(UsersRegisterRequest $request)
   {
     $user = User::create([
@@ -30,7 +26,10 @@ class UsersController extends Controller
       'email' => $request->email,
       'password' => Hash::make($request->password),
     ]);
-   
+
+    $user->Profile()->create([
+      'status' => 'open'
+    ]);
     $token = $user->createToken('login')->plainTextToken;
 
     return response()->json([
@@ -38,11 +37,10 @@ class UsersController extends Controller
       'token' => $token,
     ], 201);
   }
-  //  UsersRegisterRequest 
+
   public function login(UsersloginRequest  $request)
-  
   {
-    
+
     $credentials = $request->only('email', 'password');
 
     if (!Auth::attempt($credentials)) {
@@ -51,6 +49,7 @@ class UsersController extends Controller
         'errors' => 'Unauthorised'
       ], 401);
     }
+
     $user = User::where('email', $request->email)->first();
     $token = $token = $user->createToken('login')->plainTextToken;
 
@@ -66,7 +65,6 @@ class UsersController extends Controller
   }
   public function index()
   {
-
     return UserResource::collection(User::paginate());
   }
 
@@ -76,27 +74,21 @@ class UsersController extends Controller
     return UserResource::make($user);
   }
 
-  
+
   public function selfUpdate(UsersSelfUpdateRequest $request)
   {
-
     $user = $request->user();
-    $user->name = $request ->name;
+    $user->name = $request->name;
     $user->save();
-
-
 
     return UserResource::make($user);
   }
 
-  /**
-   * Remove the specified resource from storage.
-   */
   public function selfDestroy(Request $request)
   {
     $user = $request->user();
     $posts = $user->posts()->paginate()->delete();
-    $comment = $user->comments()->paginate()->delete();//нудна тестить 
+    $comment = $user->comments()->paginate()->delete(); //нудна тестить 
     $user->tokens()->delete();
     $user->delete();
 

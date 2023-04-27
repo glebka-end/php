@@ -24,18 +24,14 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
+    public function post(): BelongsTo
+    {
+        return $this->belongsTo(Post::class, 'user_id');
+    }
     public function userLikes():MorphToMany
     {
         return $this->morphToMany(User::class, 'likable');
     }
-    // $user=User::first();
-    // $post=Post::first();
-    // $post->userLikes()->get()
-    // $post->userLikes()->toggle($user)
-    // $post->userLikes()->count()
-    // $post=Post::withCount('userLikes')->first();
-
 }
 
 
