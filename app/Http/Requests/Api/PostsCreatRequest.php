@@ -22,11 +22,9 @@ class PostsCreatRequest extends FormRequest
     public function rules(): array
     {
         return [
-           // 'email' => 'required|email|unique:users,email',     //тут провека на email и чтобы не !совп валидация
             'title' => 'required|string|max:50',
-            'contente' => 'required|string|max:255',
+            'contente' => '|string|max:255',
             'image' => '|file|max:255',
-           // 'likes' => 'required|confirmed|min:6',
         ];
     }
 }

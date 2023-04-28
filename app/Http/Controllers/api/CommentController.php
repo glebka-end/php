@@ -93,17 +93,17 @@ class CommentController extends Controller
   {
 
     $user = $request->user();
-
+     Comment::findOrFail($commentId);
     $result =  $user->commentLike()->toggle($commentId);
 
     return response()->json([
       'status' => count($result['attached']) === 0 ? false : true,
     ]);
 
-    #if($result['attached']==)
-    return response()->json([
-      'like' => '+1',
-    ], 200);
+    // #if($result['attached']==)
+    // return response()->json([
+    //   'like' => '+1',
+    // ], 200);
     // $a = 'App\Models\Comment';
     // if (DB::table('likables')->where('user_id',  $user->id)
     //   ->where('likable_id', $commentId)
