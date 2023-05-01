@@ -64,7 +64,7 @@ public function friends(): HasMany//potsssss
     {
         return $this->hasMany(Friend::class, );//
     }
-
+   
 public function CommentLike(): MorphToMany
 {
     return $this->morphedByMany(Comment::class, 'likable');
@@ -74,13 +74,5 @@ public function postsLike(): MorphToMany
 {
     return $this->morphedByMany(Post::class, 'likable');
 }
-
-// /**
-//  * Get all of the videos that are assigned this tag.
-//  */
-// public function commentLike(): MorphToMany
-// {
-//     return $this->morphedByMany(Comment::class, 'taggable');
-// }
 }
 

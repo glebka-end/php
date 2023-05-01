@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;//
 use Illuminate\Database\Eloquent\Relations\HasOne;//
 use Illuminate\Database\Eloquent\Relations\MorphToMany;//
-class Profile extends Model
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+class Subscription extends Model
 {
     use HasFactory;
-    // protected $table = 'profiles';
-    //  protected $fillable = ['status'];
-    public function user()
+
+    public function profile(): BelongsTo
     {
-        return $this->belongsTo(User::class);
-    }
-    public function subscriptions(): HasMany//potsssss
-    {
-        return $this->hasMany(Subscription::class, 'to_profile_id');//
+        return $this->belongsTo(Profile::class, 'id');
     }
 
+    public function c():HasMany
+    {
+        return $this->HasMany(Profile::class, 'to_profile_id');
+    }
 }
