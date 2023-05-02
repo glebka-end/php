@@ -28,7 +28,7 @@ class UsersController extends Controller
     ]);
 
     $user->Profile()->create([
-      'status' => 'open'
+     
     ]);
     $token = $user->createToken('login')->plainTextToken;
 
@@ -40,9 +40,8 @@ class UsersController extends Controller
 
   public function login(UsersloginRequest  $request)
   {
-
     $credentials = $request->only('email', 'password');
-
+    
     if (!Auth::attempt($credentials)) {
       return response()->json([
         'message' => 'Неверно указан почта  или пароль',
@@ -68,12 +67,10 @@ class UsersController extends Controller
     return UserResource::collection(User::paginate());
   }
 
-
   public function show(User $user)
   {
     return UserResource::make($user);
   }
-
 
   public function selfUpdate(UsersSelfUpdateRequest $request)
   {

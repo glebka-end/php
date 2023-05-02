@@ -12,7 +12,7 @@ use phpseclib3\File\ASN1\Maps\Name;
 use App\Http\Controllers\api\logController;
 use App\Http\Controllers\api\PostController;
 use App\Http\Controllers\api\CommentController;
-use App\Http\Controllers\api\FriendController;
+use App\Http\Controllers\api\SubscriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,37 +31,31 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/users/self', [UsersController::class, 'self']);
     Route::get('/users', [UsersController::class, 'index']);
-    // Route::get('/users/show/{id}', [UsersController::class, 'show']);
     Route::post('/users', [UsersController::class, 'store']);
     Route::get('/users/{userId}', [UsersController::class, 'show']);
-    //Route::get('/users/show/{id}', [UsersController::class, 'show']);
-    Route::put('/user/self', [UsersController::class, 'selfUpdate']); //metod
+    Route::put('/user/self', [UsersController::class, 'selfUpdate']);
     Route::delete('/user/self', [UsersController::class, 'selfDestroy']);
 
-    //Route::apiResource('/post',PostController::class);
+
     Route::post('/users/self-new-post', [PostController::class, 'store']);
     Route::get('/users/{userId}/posts', [PostController::class, 'index']);
     Route::get('/users/post/{postId}', [PostController::class, 'show']);
     Route::put('/users/post/{postId}', [PostController::class, 'update']);
     Route::delete('/users/post/{postId}', [PostController::class, 'destroy']);
-   // Route::get('/users/post/{post}/like', [PostController::class, 'showLike']);
-   Route::get('/users/post/{post}/likes', [PostController::class, 'showLike']);
-   Route::put('/users/post/{post}/likes', [PostController::class, 'storeLike']);
+    Route::get('/users/post/{post}/likes', [PostController::class, 'showLike']);
+    Route::put('/users/post/{post}/likes', [PostController::class, 'storeLike']);
 
 
     Route::post('users/post/{postId}/comments', [CommentController::class, 'store']);
     Route::get('posts/{postId}/comments', [CommentController::class, 'index']);
-    Route::get('posts/{postId}/comments/{commentId}', [CommentController::class, 'show']);
     Route::put('posts/{postId}/comments/{commentId}', [CommentController::class, 'update']);
     Route::delete('posts/{postId}/comments/{commentid}', [CommentController::class, 'destroy']);
     Route::put('/comment/{commentId}/likes', [CommentController::class, 'storeLike']);
     Route::get('/comment/{commentId}/likes', [CommentController::class, 'showLike']);
-   
-    Route::put('users/users/throwInFriends/{userId}', [FriendController::class, 'viewing']);
-    Route::get('users/users/throwInFriends/{userId}', [FriendController::class, 'index']);
+
+    Route::put('users/users/throwInFriends/{userId}', [SubscriptionController::class, 'viewing']);
+    Route::get('users/users/throwInFriends/{userId}', [SubscriptionController::class, 'index']);
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
 Route::get('/user/fill', [LogController::class, 'fill']);
 Route::get('/user/tabl', [LogController::class, 'tabl']);
-
-

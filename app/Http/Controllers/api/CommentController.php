@@ -24,32 +24,21 @@ class CommentController extends Controller
     ])
       ->loadCount('userLikes')
       ->load('user');
-      
+
     return CommentResource::make($comment->loadCount('userLikes'));
-   
   }
 
 
-  public function index(Request $request, int $postId)
+  public function index(Request $request, Post  $postId)
   {
-    //$comment = $postId->comments()->paginate();
-    // $commentt = Comment::withCount('userLikes');
-
-    $comment = Comment::where('post_id', $postId)->get()
-    ->loadCount('userLikes')
-    ->load('user');
+    $comment = $postId->comments()->paginate()
+      ->loadCount('userLikes')
+      ->load('user');
 
     return CommentResource::collection($comment);
   }
 
-  public function show(Post  $postId, $commentId, User $user)
-  {
-    // $comment =  $postId->comments()->findOrFail($commentId); //для одного 
-    $comment = Comment::withCount('userLikes')->find($commentId);
-    return CommentResource::make($comment);
-  }
-
-  public function update(CommentsCreatRequests $request, Post  $postId, $commentId)
+  public function update(CommentsCreatRequests $request, Post  $postId, $commentId,)
   {
     $user = $request->user();
     $comment =  $postId
@@ -60,19 +49,18 @@ class CommentController extends Controller
       'comment' => $request->comment,
     ]);
 
-    // $comment->comment = $request['comment'];
-    // $comment->save();
 
     return CommentResource::make($comment);
   }
 
-  /**
-   * Remove the specified resource from storage.
-   */
-  public function destroy(Post  $postId, $commentId)
-  {
 
-    $comment =  $postId->comments()->findOrFail($commentId); //для одного 
+  public function destroy(Post  $postId, $commentId, User $user, Request $request)
+  {
+   $user = $request->user();
+    $comment =  $postId
+      ->comments()
+      ->where('user_id', $user->id)
+      ->findOrFail($commentId);
     $comment->delete();
 
     return response()->json([
@@ -91,56 +79,13 @@ class CommentController extends Controller
   // }
   public function storeLike($commentId, Request $request, User $user)
   {
-
     $user = $request->user();
-     Comment::findOrFail($commentId);
+    Comment::findOrFail($commentId);
     $result =  $user->commentLike()->toggle($commentId);
 
     return response()->json([
       'status' => count($result['attached']) === 0 ? false : true,
     ]);
-
-    // #if($result['attached']==)
-    // return response()->json([
-    //   'like' => '+1',
-    // ], 200);
-    // $a = 'App\Models\Comment';
-    // if (DB::table('likables')->where('user_id',  $user->id)
-    //   ->where('likable_id', $commentId)
-    //   ->where('likable_type', $a)->exists()
-    // ) {
-    //   $user->commentLike()->detach($commentId);
-    //   return response()->json([
-    //     'like' => 'удален',
-    //   ], 200);
-
-    // } else {
-    //   $user->commentLike()->attach($commentId);
-
-    //   return response()->json([
-    //     'like' => '+1',
-    //   ], 200);
-    // }
-
-    // $a = 'App\Models\Comment';
-    // if (DB::table('likables')->where('user_id',  $user->id)
-    //   ->where('likable_id', $commentId)
-    //   ->where('likable_type', $a)->exists()
-    // ) {
-    //   return response()->json([
-    //     'like' => 'уже поставил',
-    //   ], 200);
-    //   DB::table('likables')->delete(
-    //     ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
-    //   );
-    // } else {
-    //   DB::table('likables')->insert(
-    //     ['likable_type' => 'App\Models\Comment', 'user_id' => $user->id, 'likable_id' => $commentId]
-    //   );
-    //   return response()->json([
-    //     'like' => '+1',
-    //   ], 200);
-    // }
   }
 
   // public function fil(Request $request)
