@@ -54,7 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/comment/{commentId}/likes', [CommentController::class, 'showLike']);
 
     Route::put('users/users/throwInFriends/{userId}', [SubscriptionController::class, 'viewing']);
-    Route::get('users/users/throwInFriends/{userId}', [SubscriptionController::class, 'index']);
+    Route::get('users/users/indexFollwing/{profileId}', [SubscriptionController::class, 'indexFollwing']);
+    Route::get('users/users/indexFollowers/{profileId}', [SubscriptionController::class, 'indexFollowers']);
+    Route::post('users/users/storeFollwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
+
 });
 Route::post('/users/fil', [PostController::class, 'fil']);
 Route::get('/user/fill', [LogController::class, 'fill']);

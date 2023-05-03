@@ -38,10 +38,10 @@ class PostController extends Controller
     public function index($userId)
     {
         $user = User::findOrFail($userId);
-        $posts = Post::where('user_id', $userId)->get()
-            ->loadCount('userLikes')
-            ->load('user')
-            ->load('comments');
+        $posts = Post::where('user_id', $userId)
+            ->withCount(['userLikes'])//pot
+            ->with(['user','comments'])
+            ->get();
 
         return PostResource::collection($posts);
     }
@@ -55,7 +55,7 @@ class PostController extends Controller
         return PostResource::make($post);
     }
 
-    public function update(PostsCreatRequest $request, User $user, $postId) 
+    public function update(PostsCreatRequest $request, User $user, $postId)
     {
         $user = $request->user();
         $post = $user->posts()->findOrFail($postId);
@@ -63,7 +63,7 @@ class PostController extends Controller
         $post->update([
             'title' => $request->title,
             'contente' => $request->contente,
-            'image' =>  $request ->image,
+            'image' =>  $request->image,
         ]);
         $post = Post::withCount('userLikes')->find($postId)
             ->load('user')
@@ -75,7 +75,7 @@ class PostController extends Controller
     public function destroy(PostsCreatRequest $request, User $user, $postId)
     {
         $user = $request->user();
-        $post = $user->posts()->findOrFail($postId); 
+        $post = $user->posts()->findOrFail($postId);
         $post->delete();
         return response()->json([
             'status' => 'ok',
@@ -83,17 +83,16 @@ class PostController extends Controller
     }
     public function storeLike($postId, Request $request, User $user)
     {
-      $user = $request->user();
-      Comment::findOrFail($postId);
-      $result =  $user->commentLike()->toggle($postId);
-  
-      return response()->json([
-        'status' => count($result['attached']) === 0 ? false : true,
-      ]);
+        $user = $request->user();
+        Comment::findOrFail($postId);
+        $result =  $user->commentLike()->toggle($postId,'statuse',1);
+
+        return response()->json([
+            'status' => count($result['attached']) === 0 ? false : true,
+        ]);
     }
 
     public function showLike(int $postId, Request $request, User $user)
     {
-       
     }
 }

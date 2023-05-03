@@ -10,29 +10,22 @@ use App\Models\Subscription;
 use App\Models\Profile;
 use App\Models\User;
 use App\Models\Post;
-
-
 use App\Http\Resources\Api\CommentResource;
-
-use App\Http\Resources\Api\FriendResource;
+use App\Http\Resources\Api\SubscriptionResource;
 use App\Http\Requests\Api\CommentsCreatRequests;
 use Illuminate\Support\Facades\DB;
 use NunoMaduro\Collision\Adapters\Phpunit\Subscribers\Subscriber;
 
 class SubscriptionController extends Controller
 {
-    public function index(Request $request,  $userId)
-
-
+    public function indexFollwing(Request $request,  $userId) //ты подписан 
     {
-
-        
-               $profile = profile::findOrFail(1);
-        $profile->subscriptions()->paginate()
-            ->where('to_profile_id', '=', 1)
-            ->where('statuse', '=', 1);
-
-            return FriendResource::collection($profile);
+        $profile = profile::findOrFail(1);
+        $subscriptions = $profile->subscriptions()
+            ->where('statuse', '=', 1)
+            ->paginate();
+        //  ->withCount();
+        return SubscriptionResource::collection($subscriptions);
         // // ->withCount('to_profile_id');
         // $friend_count = DB::table('subscriptions')
         //     ->where('to_profile_id', '=', 1)
@@ -44,10 +37,27 @@ class SubscriptionController extends Controller
         // $posts = Subscription::where('to_profile_id', 1)
         //     ->where('statuse', '=', 1)
         //     ->get();
+    }
+    public function indexFollowers(Request $request,  $userId) //на тебя 
+    {
+        $profile = profile::findOrFail(1);
+        $subscriptions = $profile->subscribers()
+            ->where('statuse', '=', 1)
+            ->paginate();
 
+        return SubscriptionResource::collection($subscriptions);
     }
 
+    public function storeFollwing(Request $request,  $profileId)
+    {
+        $user = $request->user();
+      return  $post = $user->Profile()->paginate();//->findOrFail($postId);
+        $profile2 = profile::findOrFail($profileId);
+        return $result = $profile2->a()
+            ->toggle([1 => ['statuse' => 2]]);
 
+        return SubscriptionResource::collection($subscriptions);
+    }
 
     public function viewing(Request $request, User $user, int $userId)
     {
