@@ -56,9 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('users/users/throwInFriends/{userId}', [SubscriptionController::class, 'viewing']);
     Route::get('users/users/indexFollwing/{profileId}', [SubscriptionController::class, 'indexFollwing']);
     Route::get('users/users/indexFollowers/{profileId}', [SubscriptionController::class, 'indexFollowers']);
+    Route::get('users/users/applicationsIndexFollowers', [SubscriptionController::class, 'applicationsIndexFollowers']);
     Route::post('users/users/storeFollwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
 
 });
-Route::post('/users/fil', [PostController::class, 'fil']);
-Route::get('/user/fill', [LogController::class, 'fill']);
-Route::get('/user/tabl', [LogController::class, 'tabl']);
+

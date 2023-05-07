@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;//
 use Illuminate\Database\Eloquent\Relations\HasOne;//
 use Illuminate\Database\Eloquent\Relations\MorphToMany;//
 use Illuminate\Database\Eloquent\Relations\belongsToMany;//
+use Illuminate\Database\Eloquent\Relations\BelongsTo;//
 
 class Profile extends Model
 {
     use HasFactory;
     // protected $table = 'profiles';
     //  protected $fillable = ['status'];
-    public function user()
+    public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -27,10 +28,5 @@ class Profile extends Model
     {
         return $this->belongsToMany(Profile::class, 'subscriptions', 'from_profile_id' ,'to_profile_id')->withPivot('statuse');
     }
-
-    public function a(): belongsToMany//potsssss
-    {
-        return $this->belongsToMany(Profile::class,'subscriptions', 'from_profile_id' ,'to_profile_id');
-    }
-
+    
 }

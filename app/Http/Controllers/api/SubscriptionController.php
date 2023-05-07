@@ -18,29 +18,22 @@ use NunoMaduro\Collision\Adapters\Phpunit\Subscribers\Subscriber;
 
 class SubscriptionController extends Controller
 {
-    public function indexFollwing(Request $request,  $userId) //ты подписан 
+    public function indexFollwing(Request $request,) //ты подписан 
     {
-        $profile = profile::findOrFail(1);
+        $user = $request->user();
+        $profile = User::find($user->id)->profile;
+
         $subscriptions = $profile->subscriptions()
             ->where('statuse', '=', 1)
             ->paginate();
         //  ->withCount();
         return SubscriptionResource::collection($subscriptions);
-        // // ->withCount('to_profile_id');
-        // $friend_count = DB::table('subscriptions')
-        //     ->where('to_profile_id', '=', 1)
-        //     ->where('statuse', '=', 1);
-
-        // //     // ->loadCount('c');
-        // //     // ->load('user')
-        // //     // ->load('comments');
-        // $posts = Subscription::where('to_profile_id', 1)
-        //     ->where('statuse', '=', 1)
-        //     ->get();
     }
     public function indexFollowers(Request $request,  $userId) //на тебя 
     {
-        $profile = profile::findOrFail(1);
+        $user = $request->user();
+        $profile = User::find($user->id)->profile;
+
         $subscriptions = $profile->subscribers()
             ->where('statuse', '=', 1)
             ->paginate();
@@ -48,32 +41,61 @@ class SubscriptionController extends Controller
         return SubscriptionResource::collection($subscriptions);
     }
 
-    public function storeFollwing(Request $request,  $profileId)
+    public function storeFollwing(Request $request,  $to_profileId)
     {
         $user = $request->user();
-      return  $post = $user->Profile()->paginate();//->findOrFail($postId);
-        $profile2 = profile::findOrFail($profileId);
-        return $result = $profile2->a()
-            ->toggle([1 => ['statuse' => 2]]);
+        $from_profile = User::find($user->id)->profile;
+        $to_profile = profile::findOrFail($to_profileId);
+
+        if (DB::table('profiles')
+            ->where('id',  $to_profile->id)
+            ->where('status', 1)
+            ->exists()
+        ) {
+            $to_profile = $to_profile->id;
+            $result = $from_profile->subscriptions()
+                ->toggle([$to_profile => ['statuse' => 1]]);
+
+            return response()->json([
+                'status' => count($result['attached']) === 0 ? false : true,
+            ]);
+        } else {
+            $to_profile = $to_profile->id;
+            $result = $from_profile->subscriptions()
+                ->toggle([$to_profile => ['statuse' =>  2]]);
+
+            return response()->json([
+                'status' => count($result['attached']) === 0 ? false : true,
+            ]);
+        }
+    }
+
+    public function applicationsIndexFollowers(Request $request,)
+    {
+        $user = $request->user();
+        $profile = User::find($user->id)->profile;
+
+        $subscriptions = $profile->subscribers()
+            ->where('statuse', '=', 2)
+            ->paginate();
 
         return SubscriptionResource::collection($subscriptions);
     }
+    // public function viewing(Request $request, User $user, int $userId)
+    // {
+    //     $user = $request->user();
+    //     if ($v = DB::table('friends')->where('friend_id',  $user->id)
+    //         ->where('user_id', $userId)->exists()
 
-    public function viewing(Request $request, User $user, int $userId)
-    {
-        $user = $request->user();
-        if ($v = DB::table('friends')->where('friend_id',  $user->id)
-            ->where('user_id', $userId)->exists()
+    //     ) {
+    //         return response()->json([
+    //             'доступно ' => '',
+    //         ], 200);
+    //     } else {
 
-        ) {
-            return response()->json([
-                'доступно ' => '',
-            ], 200);
-        } else {
-
-            return response()->json([
-                'недоступно' => '',
-            ], 200);
-        }
-    }
+    //         return response()->json([
+    //             'недоступно' => '',
+    //         ], 200);
+    //     }
+    // }
 }
