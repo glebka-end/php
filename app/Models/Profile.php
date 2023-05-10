@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo; //
 class Profile extends Model
 {
     use HasFactory;
-    // protected $table = 'profiles';
-    //  protected $fillable = ['status'];
+    protected $table = 'profiles';
+     protected $fillable = ['status','is_online'];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

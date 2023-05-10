@@ -35,11 +35,11 @@ class ProfileController extends Controller
         $to_Profile = Profile::findOrFail($to_Profile);
 
         if (DB::table('profiles') //нужно переделать них.... не понятно ) но работает 
-            ->where('id',  $to_Profile->id)//пока оставим так 
+            ->where('id',  $to_Profile->id) //пока оставим так 
             ->where('status', 1)
             ->exists()
         ) {
-            return SubscriptionResource::make($to_Profile);//all profile
+            return SubscriptionResource::make($to_Profile); //all profile
         }
         if (DB::table('profiles')
             ->where('id',  $to_Profile->id)
@@ -55,11 +55,23 @@ class ProfileController extends Controller
                 ->where('statuse', 1)
                 ->exists()
             ) {
-                return SubscriptionResource::make($to_Profile);//all profile
+                return SubscriptionResource::make($to_Profile); //all profile
             } {
-                return ProfilsResource::make($to_Profile);//cloc=k profile
+                return ProfilsResource::make($to_Profile); //cloc=k profile
             }
         }
         //  return SubscriptionResource::collection($indexProfiles);
+    }
+    public function updateProfiles(Request $request)
+    {
+        $user = $request->user();
+        $profile = $user->profile;
+
+      return  $profile->update([
+            'status' => $request->status,
+             'is_online' => $request->is_online,
+            // 'image' =>  $request->image,
+        ]);
+        //return SubscriptionResource::collection($indexProfiles);
     }
 }

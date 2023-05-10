@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('users/users/storeFollwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
 
     Route::get('users/users/index-profiles', [ProfileController::class, 'indexProfiles']);
-    Route::get('users/users/shou-profile/{profileId}', [ProfileController::class, 'showProfiles']);
+    Route::get('users/users/show-profile/{profileId}', [ProfileController::class, 'showProfiles']);
+    Route::put('users/users/update-profile', [ProfileController::class, 'updateProfiles']);
 });
 
