@@ -17,16 +17,9 @@ class ProfilsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            //   'user_image' => $this->user,
-            //  'post_id' => $this->post_id,
-            // // 'user_id' => $this->user_id,
-            // // 'comment' => $this->comment,
-            // 'friends' => $this->when(
-            //     isset($this->user_likes_count),
-            //     $this->user_likes_count
-            // ),
-            //    'user' => UserResource::make($this->whenLoaded('user')),
-            // 'user_likes' => UserResource::collection($this->whenLoaded('userLikes')),
+            'user_image' => $this->user_image,
+            'user_id' => $this->user_id,
+            'status' => $this->status,
         ];
     }
 }
