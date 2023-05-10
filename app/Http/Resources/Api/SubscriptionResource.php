@@ -25,7 +25,11 @@ class SubscriptionResource extends JsonResource
       'status' => $this->status,
       'total_number_of_games' => $this->total_number_of_games,
       'won_games' => $this->won_games,
-      'lost_games' => $this->lost_games,
+    
+      //   'likes_count' => $this->when(
+      //     isset($this->user_likes_count),
+      //     $this->user_likes_count
+      // ), 
     ];
   }
 }

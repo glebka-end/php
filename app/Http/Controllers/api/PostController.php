@@ -39,7 +39,7 @@ class PostController extends Controller
     {
         $user = User::findOrFail($userId);
         $posts = Post::where('user_id', $userId)
-            ->withCount(['userLikes'])//pot
+            ->withCount(['userLikes'])
             ->with(['user','comments'])
             ->get();
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comment;
-use App\Models\Friend;
 use App\Models\Subscription;
 use App\Models\Profile;
 use App\Models\User;
@@ -25,17 +24,19 @@ class SubscriptionController extends Controller
 
         $subscriptions = $profile->subscriptions()
             ->where('statuse', '=', 1)
-            ->paginate();
-        //  ->withCount();
+            ->paginate()
+            ->withCount('Followers');
+
         return SubscriptionResource::collection($subscriptions);
     }
     public function indexFollowers(Request $request,  $userId) //на тебя 
     {
         $user = $request->user();
-        $profile = User::find($user->id)->profile;
+        $profile =$user->profile;//заменить ВСЕ
 
         $subscriptions = $profile->subscribers()
             ->where('statuse', '=', 1)
+            //->withCount('Followers')
             ->paginate();
 
         return SubscriptionResource::collection($subscriptions);
@@ -45,8 +46,13 @@ class SubscriptionController extends Controller
     {
         $user = $request->user();
         $from_profile = User::find($user->id)->profile;
-        $to_profile = profile::findOrFail($to_profileId);
+        $to_profile = Profile::findOrFail($to_profileId);
 
+        if ($from_profile->id === $to_profile->id) {
+            return response()->json([
+                'status' => '-'
+            ]);
+        }
         if (DB::table('profiles')
             ->where('id',  $to_profile->id)
             ->where('status', 1)
@@ -70,10 +76,11 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function applicationsIndexFollowers(Request $request,)
+    public function applicationsIndexFollowers(Request $request,) //просмотр запросов на подписку ) на себя
     {
         $user = $request->user();
         $profile = User::find($user->id)->profile;
+
 
         $subscriptions = $profile->subscribers()
             ->where('statuse', '=', 2)
@@ -81,21 +88,81 @@ class SubscriptionController extends Controller
 
         return SubscriptionResource::collection($subscriptions);
     }
-    // public function viewing(Request $request, User $user, int $userId)
-    // {
-    //     $user = $request->user();
-    //     if ($v = DB::table('friends')->where('friend_id',  $user->id)
-    //         ->where('user_id', $userId)->exists()
+    public function acceptTheApplicationsFollowers(Request $request, $profileId) //принять или отклонить запрос 
+    {
+        $user = $request->user();
+        $from_profile = User::find($user->id)->profile;
+        $profileId = Profile::findOrFail($profileId);
 
-    //     ) {
-    //         return response()->json([
-    //             'доступно ' => '',
-    //         ], 200);
-    //     } else {
+        if (DB::table('subscriptions')
+            ->where('to_profile_id',  $from_profile->id)
+            ->where('from_profile_id', $profileId->id)
+            ->where('statuse', 2)
+            ->exists()
+        ) {
+        
+            DB::table('subscriptions')
+                ->where('to_profile_id',  $from_profile->id)
+                ->where('from_profile_id',  $profileId->id)
+                ->where('statuse',  2)
+                ->update(['statuse' => 1]);
+            return response()->json([
+                'status' => "ok"
+            ]);
+        } else {
+            return response()->json([
+                'status' => "-"
+            ]);
+        }
+    }
 
-    //         return response()->json([
-    //             'недоступно' => '',
-    //         ], 200);
-    //     }
-    // }
+    public function doesNotAcceptTheApplicationsFollowers(Request $request, $profileId) //не принять или отклонить запрос 
+    {
+
+        $user = $request->user();
+        $from_profile = User::find($user->id)->profile;
+        $profileId = Profile::findOrFail($profileId);
+
+        if (DB::table('subscriptions')
+            ->where('to_profile_id',  $from_profile->id)
+            ->where('from_profile_id', $profileId->id)
+            ->where('statuse', 2)
+            ->exists()
+        ) {
+            // $user = $request->user();
+            // $profile = User::find($user->id)->profile;
+            // $profile->subscriptions()->updateExistingPivot(4, [
+            //     'statuse' => 1,
+            // ]);
+            DB::table('subscriptions')
+                ->where('to_profile_id',  $from_profile->id)
+                ->where('from_profile_id',  $profileId->id)
+                ->where('statuse',  2)
+                ->update(['statuse' => 3]);
+            return response()->json([
+                'status' => "ok"
+            ]);
+        } else {
+            return response()->json([
+                'status' => "-"
+            ]);
+        }
+    }
+    public function viewing(Request $request, User $user, int $userId)
+    {
+        $user = $request->user();
+        if ($v = DB::table('friends')->where('friend_id',  $user->id)
+            ->where('user_id', $userId)->exists()
+
+        ) {
+            return response()->json([
+                'доступно ' => '',
+            ], 200);
+        } else {
+
+            return response()->json([
+                'недоступно' => '',
+            ], 200);
+        }
+    }
 }

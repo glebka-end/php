@@ -13,6 +13,7 @@ use App\Http\Controllers\api\logController;
 use App\Http\Controllers\api\PostController;
 use App\Http\Controllers\api\CommentController;
 use App\Http\Controllers\api\SubscriptionController;
+use App\Http\Controllers\api\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/users/indexFollwing/{profileId}', [SubscriptionController::class, 'indexFollwing']);
     Route::get('users/users/indexFollowers/{profileId}', [SubscriptionController::class, 'indexFollowers']);
     Route::get('users/users/applicationsIndexFollowers', [SubscriptionController::class, 'applicationsIndexFollowers']);
+    Route::put('users/users/acceptTheApplicationsFollowers/{profileId}', [SubscriptionController::class, 'acceptTheApplicationsFollowers']);
+    Route::put('users/users/doesNotAcceptTheApplicationsFollowers/{profileId}', [SubscriptionController::class, 'doesNotAcceptTheApplicationsFollowers']);
     Route::post('users/users/storeFollwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
 
+    Route::get('users/users/index-profiles', [ProfileController::class, 'indexProfiles']);
 });
 

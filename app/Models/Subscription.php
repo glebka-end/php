@@ -17,8 +17,9 @@ class Subscription extends Model
         return $this->belongsTo(Profile::class, 'id');
     }
 
-    public function c():HasMany
+
+    public function followers(): MorphToMany
     {
-        return $this->HasMany(Profile::class, 'to_profile_id');
+        return $this->morphedByMany(Subscription::class, 'to_profile_id')->withPivot('statuse');
     }
 }
