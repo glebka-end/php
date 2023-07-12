@@ -40,11 +40,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/users/self-new-post', [PostController::class, 'store']);
     Route::get('/users/{userId}/posts', [PostController::class, 'index']);
+    Route::get('/user/posts', [PostController::class, 'getPosts']);
     Route::get('/users/post/{postId}', [PostController::class, 'show']);
     Route::put('/users/post/{postId}', [PostController::class, 'update']);
     Route::delete('/users/post/{postId}', [PostController::class, 'destroy']);
     Route::get('/users/post/{post}/likes', [PostController::class, 'showLike']);
-    Route::put('/users/post/{post}/likes', [PostController::class, 'storeLike']);
+    Route::put('/users/post/{postId}/likes', [PostController::class, 'storeLike']);
 
 
     Route::post('users/post/{postId}/comments', [CommentController::class, 'store']);
@@ -62,8 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('users/users/doesNotAcceptTheApplicationsFollowers/{profileId}', [SubscriptionController::class, 'doesNotAcceptTheApplicationsFollowers']);
     Route::post('users/users/storeFollwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
 
-    Route::get('users/users/index-profiles', [ProfileController::class, 'indexProfiles']);
+    Route::put('users/users/index-profiles', [ProfileController::class, 'indexProfiles']);//get
     Route::get('users/users/show-profile/{profileId}', [ProfileController::class, 'showProfiles']);
+    Route::get('users/users/profile', [ProfileController::class, 'getProfile']);
     Route::put('users/users/update-profile', [ProfileController::class, 'updateProfiles']);
 });
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserloginRequest extends FormRequest
+class UsersloginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +23,9 @@ class UserloginRequest extends FormRequest
     {
         return [
             //'email' => 'required|email|unique:users,email',  
-             'email' => 'required|max:255',      //тут провека на email и чтобы не !совп валидация
-            // 'name' => 'required|string|max:255',
-            'password' => 'required|max:255',
+            //  'email' => 'required|max:255',      //тут провека на email и чтобы не !совп валидация
+            // // 'name' => 'required|string|max:255',
+            // 'password' => 'required|max:255',
           
         ];
     }

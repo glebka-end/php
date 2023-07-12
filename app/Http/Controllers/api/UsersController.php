@@ -21,7 +21,13 @@ class UsersController extends Controller
 
   public function register(UsersRegisterRequest $request)
   {
+    //$w=['0'];
+    $rrr='wewqewq';
+
+    
     $user = User::create([
+      
+     // 'name' => $request->name,
       'name' => $request->name,
       'email' => $request->email,
       'password' => Hash::make($request->password),
@@ -33,7 +39,7 @@ class UsersController extends Controller
     $token = $user->createToken('login')->plainTextToken;
 
     return response()->json([
-      'user' => UserResource::make($user),
+     'user' => UserResource::make($user),
       'token' => $token,
     ], 201);
   }

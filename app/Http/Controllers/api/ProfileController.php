@@ -21,6 +21,12 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+
+    public function getProfile(Request $request)
+    {
+        $user = $request->user();
+       return $profile = $user->profile;
+    }
     public function indexProfiles(Request $request)
     {
         $indexProfiles = DB::table('profiles')->get();
@@ -62,16 +68,30 @@ class ProfileController extends Controller
         }
         //  return SubscriptionResource::collection($indexProfiles);
     }
-    public function updateProfiles(Request $request)
+
+
+
+    public function updateProfiles(Request $request, User $user)
     {
         $user = $request->user();
         $profile = $user->profile;
-
-      return  $profile->update([
+        // return  $request;
+        $profile->update([
+            'first_name' => $request->first_name,
             'status' => $request->status,
-             'is_online' => $request->is_online,
+            'is_online'=> $request->is_online,
+            'last_name' => $request->last_name,
+            'age' => $request->age,
+            'gender'=>$request->gender,
+            //  'gender' => $request->gender,
             // 'image' =>  $request->image,
+        //     "first_name": "123zxc",
+        //     "last_name": "pytko",
+        //      "age": "13",
+        //    "gender": "m"
+        
         ]);
-        //return SubscriptionResource::collection($indexProfiles);
+        return $profile;
+        return SubscriptionResource::make($profile);
     }
 }

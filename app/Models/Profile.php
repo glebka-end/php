@@ -14,7 +14,9 @@ class Profile extends Model
 {
     use HasFactory;
     protected $table = 'profiles';
-     protected $fillable = ['status','is_online'];
+    //protected $fillable = ['status','is_online'];
+    protected $guarded = [];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

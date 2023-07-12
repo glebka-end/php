@@ -20,8 +20,7 @@ class PostController extends Controller
 {
     public function store(PostsCreatRequest $request)
     {
-        $path =  Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('a'), 'public');
-
+        $path = Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('image'), 'public');
         $user = $request->user();
         $post = $user->posts()->create([
             'title' => $request->title,
@@ -34,7 +33,15 @@ class PostController extends Controller
 
         return PostResource::make($post->loadCount('userLikes'));
     }
-
+    public function getPosts( User $user,Request $request)
+    {
+        $userr = $request->user();
+        $posts = Post::where('user_id', $userr->id)
+            ->withCount(['userLikes'])
+            ->with(['user','comments'])
+            ->get();
+        return PostResource::collection($posts);
+    }
     public function index($userId)
     {
         $user = User::findOrFail($userId);
@@ -72,7 +79,7 @@ class PostController extends Controller
         return PostResource::make($post);
     }
 
-    public function destroy(PostsCreatRequest $request, User $user, $postId)
+    public function destroy(Request $request, User $user, $postId)
     {
         $user = $request->user();
         $post = $user->posts()->findOrFail($postId);
@@ -84,8 +91,8 @@ class PostController extends Controller
     public function storeLike($postId, Request $request, User $user)
     {
         $user = $request->user();
-        Comment::findOrFail($postId);
-        $result =  $user->commentLike()->toggle($postId,'statuse',1);
+        Post::findOrFail($postId);
+        $result =  $user->postsLike()->toggle($postId);
 
         return response()->json([
             'status' => count($result['attached']) === 0 ? false : true,

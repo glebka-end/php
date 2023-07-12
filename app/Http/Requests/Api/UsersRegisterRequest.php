@@ -22,9 +22,9 @@ class UsersRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:users,email',     //тут провека на email и чтобы не !совп валидация
-            'name' => 'required|string|max:255',
-            'password' => 'required|confirmed|min:6',
+            // 'email' => 'required|email|unique:users,email',     //тут провека на email и чтобы не !совп валидация
+            // 'name' => 'required|string|max:255',
+            // 'password' => 'required|confirmed|min:6',
         ];
     }
 }
