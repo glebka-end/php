@@ -26,7 +26,7 @@ class Comment extends Model
     }
     public function post(): BelongsTo
     {
-        return $this->belongsTo(Post::class, 'user_id');
+        return $this->belongsTo(Post::class, );
     }
     public function userLikes():MorphToMany
     {

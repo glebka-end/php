@@ -25,7 +25,8 @@ class UsersloginRequest extends FormRequest
             //'email' => 'required|email|unique:users,email',  
             //  'email' => 'required|max:255',      //тут провека на email и чтобы не !совп валидация
             // // 'name' => 'required|string|max:255',
-            // 'password' => 'required|max:255',
+            // 'password' => 'required|max:255',//сори глеб) сроки пиздец как горят 
+
           
         ];
     }

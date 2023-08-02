@@ -24,7 +24,7 @@ class PostsCreatRequest extends FormRequest
         return [
             'title' => 'required|string|max:50',
             'contente' => '|string|max:255',
-            'image' => 'file',
+            'immage' => 'image',
         ];
     }
 }

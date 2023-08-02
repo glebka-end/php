@@ -12,7 +12,9 @@ use App\Models\Post;
 use App\Http\Resources\Api\CommentResource;
 use App\Http\Resources\Api\SubscriptionResource;
 use App\Http\Requests\Api\CommentsCreatRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder;
 use NunoMaduro\Collision\Adapters\Phpunit\Subscribers\Subscriber;
 
 class SubscriptionController extends Controller
@@ -24,15 +26,28 @@ class SubscriptionController extends Controller
 
         $subscriptions = $profile->subscriptions()
             ->where('statuse', '=', 1)
-            ->paginate()
-            ->withCount('Followers');
+            ->paginate();
+        // ->withCount('Followers');
+
+        return SubscriptionResource::collection($subscriptions);
+    }
+    public function indexFollwingById(Request $request, $profileId) // подписки другого профиля  
+    {
+        $user = $request->user();
+        $profileId = Profile::findOrFail($profileId);
+
+
+        $subscriptions = $profileId->subscriptions()
+            ->where('statuse', '=', 1)
+            ->paginate();
+        // ->withCount('Followers');
 
         return SubscriptionResource::collection($subscriptions);
     }
     public function indexFollowers(Request $request,  $userId) //на тебя 
     {
         $user = $request->user();
-        $profile =$user->profile;//заменить ВСЕ
+        $profile = $user->profile; //заменить ВСЕ
 
         $subscriptions = $profile->subscribers()
             ->where('statuse', '=', 1)
@@ -40,6 +55,26 @@ class SubscriptionController extends Controller
             ->paginate();
 
         return SubscriptionResource::collection($subscriptions);
+    }
+
+    public function signedOrNot(Request $request, string $profileId): JsonResponse //ты подписан или нет )) 
+    {
+        $user = $request->user();
+
+        $fromFrofile = $user->profile;
+        $toProfile = Profile::findOrFail($profileId);
+
+        $isSubscriptionExists = DB::table('subscriptions')
+            ->where('to_profile_id', $toProfile->id)
+            ->where('from_profile_id', $fromFrofile->id)
+            ->where(function (Builder $query) {
+                $query->whereIn('statuse', [1, 2]);
+            })
+            ->exists();
+
+        return response()->json([
+            'status' => $isSubscriptionExists,
+        ]);
     }
 
     public function storeFollwing(Request $request,  $to_profileId)
@@ -88,7 +123,7 @@ class SubscriptionController extends Controller
 
         return SubscriptionResource::collection($subscriptions);
     }
-    public function acceptTheApplicationsFollowers(Request $request, $profileId) //принять или отклонить запрос 
+    public function acceptTheApplicationsFollowers(Request $request, $profileId) //принять  запрос 
     {
         $user = $request->user();
         $from_profile = User::find($user->id)->profile;
@@ -100,7 +135,7 @@ class SubscriptionController extends Controller
             ->where('statuse', 2)
             ->exists()
         ) {
-        
+
             DB::table('subscriptions')
                 ->where('to_profile_id',  $from_profile->id)
                 ->where('from_profile_id',  $profileId->id)
@@ -129,11 +164,6 @@ class SubscriptionController extends Controller
             ->where('statuse', 2)
             ->exists()
         ) {
-            // $user = $request->user();
-            // $profile = User::find($user->id)->profile;
-            // $profile->subscriptions()->updateExistingPivot(4, [
-            //     'statuse' => 1,
-            // ]);
             DB::table('subscriptions')
                 ->where('to_profile_id',  $from_profile->id)
                 ->where('from_profile_id',  $profileId->id)

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\api;
-
+use App\Models\Profile;
 use App\Http\Resources\Api\PostResource;
 use App\Models\Post;
 use App\Models\User;
@@ -20,7 +20,8 @@ class PostController extends Controller
 {
     public function store(PostsCreatRequest $request)
     {
-        $path = Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('image'), 'public');
+        //  return $request;
+       $path = Storage::putFile('attachments/' . Carbon::now()->format('Y-m-d'), $request->file('immage'), 'public');
         $user = $request->user();
         $post = $user->posts()->create([
             'title' => $request->title,
@@ -35,8 +36,18 @@ class PostController extends Controller
     }
     public function getPosts( User $user,Request $request)
     {
-        $userr = $request->user();
-        $posts = Post::where('user_id', $userr->id)
+        $user = $request->user();
+        $posts = Post::where('user_id', $user->id)
+            ->withCount(['userLikes'])
+            ->with(['user','comments'])
+            ->get();
+        return PostResource::collection($posts);
+    }
+    public function getPostsFriend( Request $request,$profileId)
+    {
+        $profileId = Profile::findOrFail($profileId);
+        $userr = $profileId->user_id;
+        $posts = Post::where('user_id', $userr)
             ->withCount(['userLikes'])
             ->with(['user','comments'])
             ->get();

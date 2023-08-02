@@ -26,7 +26,7 @@ class PostResource extends JsonResource
                 isset($this->user_likes_count),
                 $this->user_likes_count
             ), 
-            'user' => UserResource::make($this->whenLoaded('user')),
+             'user' => UserResource::make($this->whenLoaded('user')),
             'comment' => CommentResource::
             collection($this->whenLoaded('comments')),
 

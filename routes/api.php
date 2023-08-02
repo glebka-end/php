@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/self-new-post', [PostController::class, 'store']);
     Route::get('/users/{userId}/posts', [PostController::class, 'index']);
     Route::get('/user/posts', [PostController::class, 'getPosts']);
+    Route::get('/user/posts/friend/{profileId}', [PostController::class, 'getPostsFriend']);
     Route::get('/users/post/{postId}', [PostController::class, 'show']);
     Route::put('/users/post/{postId}', [PostController::class, 'update']);
     Route::delete('/users/post/{postId}', [PostController::class, 'destroy']);
@@ -56,16 +57,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/comment/{commentId}/likes', [CommentController::class, 'showLike']);
 
     Route::put('users/users/throwInFriends/{userId}', [SubscriptionController::class, 'viewing']);
-    Route::get('users/users/indexFollwing/{profileId}', [SubscriptionController::class, 'indexFollwing']);
+    Route::get('users/users/indexFollwing', [SubscriptionController::class, 'indexFollwing']);
+    Route::get('users/users/indexFollwing/{profileId}', [SubscriptionController::class, 'indexFollwingById']);
     Route::get('users/users/indexFollowers/{profileId}', [SubscriptionController::class, 'indexFollowers']);
     Route::get('users/users/applicationsIndexFollowers', [SubscriptionController::class, 'applicationsIndexFollowers']);
-    Route::put('users/users/acceptTheApplicationsFollowers/{profileId}', [SubscriptionController::class, 'acceptTheApplicationsFollowers']);
-    Route::put('users/users/doesNotAcceptTheApplicationsFollowers/{profileId}', [SubscriptionController::class, 'doesNotAcceptTheApplicationsFollowers']);
-    Route::post('users/users/storeFollwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
+    
+    Route::put('users/users/accept-TheApplications-Followers/{profileId}', [SubscriptionController::class, 'acceptTheApplicationsFollowers']);
+    Route::put('users/users/does-Not-Accept-The-Applications-Followers/{profileId}', [SubscriptionController::class, 'doesNotAcceptTheApplicationsFollowers']);
+    Route::post('users/users/store-Follwing/{profileId}', [SubscriptionController::class, 'storeFollwing']);
+    Route::get('users/users/signed-Or-Not-Follwing/{profileId}', [SubscriptionController::class, 'signedOrNot']);
 
     Route::put('users/users/index-profiles', [ProfileController::class, 'indexProfiles']);//get
     Route::get('users/users/show-profile/{profileId}', [ProfileController::class, 'showProfiles']);
+    Route::get('users/users/show-profile/{profileId}', [ProfileController::class, 'showProfiles']);
     Route::get('users/users/profile', [ProfileController::class, 'getProfile']);
+    
     Route::put('users/users/update-profile', [ProfileController::class, 'updateProfiles']);
 });
 
