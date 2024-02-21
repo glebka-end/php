@@ -21,7 +21,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - '80:80'
+      - 80:80
+      - 443:443
     volumes:
       - php:/run/php
       - storage:/var/www/api/storage
