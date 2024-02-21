@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: backend:latest
+    hostname: backend
+    command: ['/usr/sbin/php-fpm8.1', '--nodaemonize', '--fpm-config', '/etc/php/8.1/fpm/php-fpm.conf']
+    env_file:
+      - backend/.env
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - storage:/var/www/api/storage
+      - php:/run/php
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - '80:80'
+    volumes:
+      - php:/run/php
+      - storage:/var/www/api/storage
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+
+  mysql-server:
+    image: mysql:8.0
+    hostname: mysql-server
+    env_file:
+      - ./mysql-server/mysql-server.env
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-server/my.cnf:/etc/my.cnf
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    networks:
+      - backend
+
+  redis:
+    image: redis:alpine
+    hostname: redis
+    command: ['redis-server', '--save', '', '--appendonly', 'no']
+    networks:
+      - backend
+
+  beanstalkd:
+    image: docker.io/theodesp/beanstalkd-alpine
+    hostname: beanstalkd
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
