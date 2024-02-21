@@ -30,6 +30,8 @@ services:
       - php:/run/php
       - storage:/var/www/api/storage
       - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - /opt/ssl/aivp.io/aivp.cert:/opt/ssl/aivp.io/aivp.cert
+      - /opt/ssl/aivp.io/aivp.key:/opt/ssl/aivp.io/aivp.key
     networks:
       - backend
 
