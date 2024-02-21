@@ -7,6 +7,7 @@ services:
       dockerfile: docker/Dockerfile
     image: backend:latest
     hostname: backend
+    container_name: backend
     command: ['/usr/sbin/php-fpm8.2', '--nodaemonize', '--fpm-config', '/etc/php/8.2/fpm/php-fpm.conf']
     env_file:
       - backend/.env
@@ -20,6 +21,8 @@ services:
 
   nginx:
     image: nginx:latest
+    hostname: nginx
+    container_name: nginx
     ports:
       - 80:80
       - 443:443
@@ -27,6 +30,8 @@ services:
       - php:/run/php
       - storage:/var/www/api/storage
       - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    networks:
+      - backend
 
   mysql-server:
     image: mysql:8.0
