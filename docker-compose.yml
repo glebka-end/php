@@ -13,15 +13,22 @@ services:
       - backend/.env
     extra_hosts:
       - host.docker.internal:host-gateway
+    volumes:
+      - storage:/var/www/api/storage
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:latest
+    hostname: nginx
+    container_name: nginx
     ports:
       - 80:80
       - 443:443
     volumes:
-      - storage:/var/www/api/storage
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
       - /opt/ssl/aivp.io/aivp.cert:/opt/ssl/aivp.io/aivp.cert
       - /opt/ssl/aivp.io/aivp.key:/opt/ssl/aivp.io/aivp.key
-    networks:
-      - backend
 
   mysql-server:
     image: mysql:8.0
