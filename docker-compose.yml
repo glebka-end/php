@@ -8,26 +8,15 @@ services:
     image: backend:latest
     hostname: backend
     container_name: backend
-    command: ['/usr/sbin/php-fpm8.2', '--nodaemonize', '--fpm-config', '/etc/php/8.2/fpm/php-fpm.conf']
+    command: ['/usr/bin/supervisord', '-c', '/etc/supervisor/conf.d/supervisord.conf']
     env_file:
       - backend/.env
     extra_hosts:
       - host.docker.internal:host-gateway
-    volumes:
-      - storage:/var/www/api/storage
-      - php:/run/php
-    networks:
-      - backend
-
-  nginx:
-    image: nginx:latest
-    hostname: nginx
-    container_name: nginx
     ports:
       - 80:80
       - 443:443
     volumes:
-      - php:/run/php
       - storage:/var/www/api/storage
       - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
       - /opt/ssl/aivp.io/aivp.cert:/opt/ssl/aivp.io/aivp.cert
@@ -38,6 +27,7 @@ services:
   mysql-server:
     image: mysql:8.0
     hostname: mysql-server
+    container_name: mysql-server
     env_file:
       - ./mysql-server/mysql-server.env
     ports:
@@ -53,9 +43,10 @@ services:
     networks:
       - backend
 
-  redis:
+  redis-server:
     image: redis:alpine
-    hostname: redis
+    hostname: redis-server
+    container_name: redis-server
     command: ['redis-server', '--save', '', '--appendonly', 'no']
     volumes:
       - redis_data:/data
@@ -63,14 +54,18 @@ services:
       - backend
 
   beanstalkd:
-    image: docker.io/theodesp/beanstalkd-alpine
     hostname: beanstalkd
+    container_name: beanstalkd
+    image: docker.io/theodesp/beanstalkd-alpine
     networks:
       - backend
 
 volumes:
   storage:
     name: storage
+    driver: local
+  public:
+    name: public
     driver: local
   php:
     name: php

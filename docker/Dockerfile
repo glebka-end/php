@@ -40,7 +40,7 @@ RUN mkdir -p /var/www/api /run/php /var/log/supervisor
 WORKDIR /var/www/api
 COPY . /var/www/api
 COPY ./docker/nginx.conf /etc/nginx/sites-available/default
-# COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN echo 'clear_env = no' >> /etc/php/8.2/fpm/pool.d/www.conf && \
     curl -sS https://getcomposer.org/installer | php -- --version=2.3.4 --install-dir=/bin --filename=composer --quiet && composer install && \
     cp .env.example .env && php artisan key:generate && \
