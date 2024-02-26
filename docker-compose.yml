@@ -8,11 +8,11 @@ services:
     image: backend:latest
     hostname: backend
     container_name: backend
+    ports:
+      - 80
     command: ['/usr/bin/supervisord', '-c', '/etc/supervisor/conf.d/supervisord.conf']
     env_file:
       - backend/.env
-    extra_hosts:
-      - host.docker.internal:host-gateway
     volumes:
       - storage:/var/www/api/storage
     networks:
@@ -29,6 +29,11 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
       - /opt/ssl/aivp.io/aivp.cert:/opt/ssl/aivp.io/aivp.cert
       - /opt/ssl/aivp.io/aivp.key:/opt/ssl/aivp.io/aivp.key
+    depends_on:
+      - backend
+      - mysql-server
+    networks:
+      - backend
 
   mysql-server:
     image: mysql:8.0
